@@ -354,42 +354,44 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'SET_IS_PLAYING', payload: true });
 
         try {
-          const queue = queueRef.current;
-          let resolvedIdx: number;
-
-          if (awaitingFirstPlayRef.current && expectedGenRef.current === playlistGenRef.current) {
-            // First PLAYING event after a new loadPlaylist — trust our requested index, not YouTube's
-            resolvedIdx = pendingStartIndexRef.current;
-            awaitingFirstPlayRef.current = false;
-          } else {
-            // Normal play/next/prev — trust YouTube's reported index
-            const ytIdx = event.target.getPlaylistIndex();
-            resolvedIdx = ytIdx;
-          }
-
-          if (resolvedIdx >= 0 && resolvedIdx < queue.length) {
-            dispatch({ type: 'JUMP_TO_INDEX', payload: resolvedIdx });
-          }
-
-          // Update with real YouTube video title & artist
           const videoData = event.target.getVideoData();
-          if (videoData?.title) {
-            dispatch({
-              type: 'UPDATE_YT_SONG',
-              payload: {
-                title: videoData.title,
-                artist: videoData.author || 'YouTube Music',
-                index: resolvedIdx,
-              },
-            });
+          const playingVideoId = videoData?.video_id || videoData?.videoId;
+          const queue = queueRef.current;
+
+          if (playingVideoId) {
+            const matchedIndex = queue.findIndex((s) => s.id === playingVideoId);
+
+            if (matchedIndex !== -1) {
+              dispatch({ type: 'JUMP_TO_INDEX', payload: matchedIndex });
+
+              if (videoData.title) {
+                dispatch({
+                  type: 'UPDATE_YT_SONG',
+                  payload: {
+                    title: videoData.title,
+                    artist: videoData.author || 'YouTube Music',
+                    index: matchedIndex,
+                  },
+                });
+              }
+            } else {
+              console.log('Ignored stale YT video event:', playingVideoId);
+            }
+          } else {
+            const ytIdx = event.target.getPlaylistIndex();
+            if (ytIdx >= 0 && ytIdx < queue.length) {
+              dispatch({ type: 'JUMP_TO_INDEX', payload: ytIdx });
+            }
           }
-        } catch { /* ignore */ }
+        } catch (e) {
+          console.warn('YT state change error:', e);
+        }
         break;
       }
       case 2: // PAUSED
         dispatch({ type: 'SET_IS_PLAYING', payload: false });
         break;
-      case 0: // ENDED (single video ended; YT auto-advances in playlist)
+      case 0: // ENDED
         break;
     }
   }
@@ -422,7 +424,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     didInitRef.current = true;
     const first = bhaktiPlaylists[0];
     if (first) {
-      // Use a small delay so the YT API has time to set up
       setTimeout(() => {
         playPlaylist(first.songs, 0, first.youtubePlaylistId, false);
       }, 300);
@@ -558,15 +559,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         if (yt.playVideo) {
           yt.playVideo();
         }
-        // If player was unstarted (-1) or cued (5), load/play playlist at current index
         const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
-        if (ytPlaylistIdRef.current && (pState === -1 || pState === 5)) {
+        if (pState === -1 || pState === 5) {
           const currentIndex = queueRef.current.findIndex(s => s.id === currentSongRef.current?.id);
-          yt.loadPlaylist({
-            list: ytPlaylistIdRef.current,
-            listType: 'playlist',
-            index: Math.max(0, currentIndex),
-          });
+          const videoIds = queueRef.current.map(s => s.id).filter(id => id && id !== '#');
+          const safeIndex = Math.max(0, currentIndex);
+          if (videoIds.length > 0) {
+            yt.loadPlaylist(videoIds, safeIndex, 0);
+          } else if (ytPlaylistIdRef.current) {
+            yt.loadPlaylist({
+              list: ytPlaylistIdRef.current,
+              listType: 'playlist',
+              index: safeIndex,
+            });
+          }
         }
       } catch (e) {
         console.warn('Resume error:', e);
@@ -589,13 +595,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             yt.playVideo();
           }
           const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
-          if (ytPlaylistIdRef.current && (pState === -1 || pState === 5)) {
+          if (pState === -1 || pState === 5) {
             const currentIndex = queueRef.current.findIndex(s => s.id === currentSongRef.current?.id);
-            yt.loadPlaylist({
-              list: ytPlaylistIdRef.current,
-              listType: 'playlist',
-              index: Math.max(0, currentIndex),
-            });
+            const videoIds = queueRef.current.map(s => s.id).filter(id => id && id !== '#');
+            const safeIndex = Math.max(0, currentIndex);
+            if (videoIds.length > 0) {
+              yt.loadPlaylist(videoIds, safeIndex, 0);
+            } else if (ytPlaylistIdRef.current) {
+              yt.loadPlaylist({
+                list: ytPlaylistIdRef.current,
+                listType: 'playlist',
+                index: safeIndex,
+              });
+            }
           }
         } catch (e) {
           console.warn('TogglePlay error:', e);
@@ -607,7 +619,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const nextSong = useCallback(() => {
     if (isYtMode.current && ytPlayerRef.current?.nextVideo) {
       try { ytPlayerRef.current.nextVideo(); } catch { /* ignore */ }
-      // State update happens via onStateChange → JUMP_TO_INDEX
       return;
     }
     dispatch({ type: 'NEXT_SONG' });
@@ -653,7 +664,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     (progressPercent: number) => {
       const clampedPercent = Math.max(0, Math.min(100, progressPercent));
 
-      // YouTube mode
       if (isYtMode.current && ytPlayerRef.current?.seekTo && ytPlayerRef.current?.getDuration) {
         try {
           const dur = ytPlayerRef.current.getDuration();
@@ -665,7 +675,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Non-YT mode
       const audio = audioRef.current;
       const dur = (audio && audio.duration) || state.duration || 0;
       const targetTime = (clampedPercent / 100) * dur;
@@ -726,22 +735,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string, autoPlay: boolean = true) => {
-    // Synchronously update refs so handleYtStateChange sees the new queue immediately
     queueRef.current = songs;
     currentSongRef.current = songs[startIndex] || null;
 
     dispatch({ type: 'PLAY_PLAYLIST', payload: { songs, startIndex, autoPlay } });
 
-    if (youtubePlaylistId) {
+    if (songs && songs.length > 0) {
       isYtMode.current = true;
-      ytPlaylistIdRef.current = youtubePlaylistId;
-
-      // Bump generation counter so stale PLAYING events from the old playlist are ignored
-      const thisGen = playlistGenRef.current + 1;
-      playlistGenRef.current = thisGen;
-      expectedGenRef.current = thisGen;
-      pendingStartIndexRef.current = startIndex;
-      awaitingFirstPlayRef.current = true;
+      ytPlaylistIdRef.current = youtubePlaylistId || null;
 
       const tryLoad = () => {
         const yt = ytPlayerRef.current;
@@ -750,21 +751,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             const videoIds = songs.map((s) => s.id).filter((id) => id && id !== '#');
             if (videoIds.length > 0) {
               if (autoPlay) {
-                yt.loadPlaylist({
-                  playlist: videoIds,
-                  index: startIndex,
-                });
+                yt.loadPlaylist(videoIds, startIndex, 0);
               } else {
                 if (yt.cuePlaylist) {
-                  yt.cuePlaylist({
-                    playlist: videoIds,
-                    index: startIndex,
-                  });
+                  yt.cuePlaylist(videoIds, startIndex, 0);
                 } else {
-                  yt.loadPlaylist({
-                    playlist: videoIds,
-                    index: startIndex,
-                  });
+                  yt.loadPlaylist(videoIds, startIndex, 0);
                   yt.pauseVideo?.();
                 }
               }
@@ -783,7 +775,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
                 });
               }
             }
-            // Set volume to match our state
             setTimeout(() => {
               try { yt.setVolume(state.volume * 100); } catch { /* ignore */ }
             }, 500);
@@ -792,16 +783,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             isYtMode.current = false;
           }
         } else {
-          // API not ready yet, retry
-          setTimeout(tryLoad, 500);
+          setTimeout(tryLoad, 300);
         }
       };
       tryLoad();
     } else {
-      // Non-YouTube playlist (e.g. Spotify) → simulated playback
       isYtMode.current = false;
       ytPlaylistIdRef.current = null;
-      // Stop YouTube if it was playing
       if (ytPlayerRef.current?.stopVideo) {
         try { ytPlayerRef.current.stopVideo(); } catch { /* ignore */ }
       }
