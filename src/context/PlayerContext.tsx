@@ -47,7 +47,8 @@ export type PlayerAction =
   | { type: 'PLAY_PLAYLIST'; payload: { songs: Song[]; startIndex?: number } }
   | { type: 'SET_IS_PLAYING'; payload: boolean }
   | { type: 'SET_LIKED_IDS'; payload: string[] }
-  | { type: 'JUMP_TO_INDEX'; payload: number };
+  | { type: 'JUMP_TO_INDEX'; payload: number }
+  | { type: 'UPDATE_YT_SONG'; payload: { title: string; artist: string; index: number } };
 
 function parseSongDuration(song?: Song | null): number {
   if (!song) return 0;
@@ -201,6 +202,27 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
       };
     }
 
+    case 'UPDATE_YT_SONG': {
+      if (!state.currentSong) return state;
+      const { title, artist, index } = action.payload;
+      const updatedSong: Song = {
+        ...state.currentSong,
+        title: title,
+        titleHindi: undefined,
+        artist: artist || 'YouTube Music',
+      };
+      // Also update the song in the queue so the list reflects real names
+      const updatedQueue = [...state.queue];
+      if (index >= 0 && index < updatedQueue.length) {
+        updatedQueue[index] = { ...updatedQueue[index], title, titleHindi: undefined, artist: artist || updatedQueue[index].artist };
+      }
+      return {
+        ...state,
+        currentSong: updatedSong,
+        queue: updatedQueue,
+      };
+    }
+
     case 'SET_LIKED_IDS':
       return {
         ...state, likedSongIds: action.payload,
@@ -311,12 +333,24 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     switch (event.data) {
       case 1: // PLAYING
         dispatch({ type: 'SET_IS_PLAYING', payload: true });
-        // Sync which song YouTube is actually playing
+        // Sync which song YouTube is actually playing — get REAL title from YouTube
         try {
           const ytIdx = event.target.getPlaylistIndex();
+          const videoData = event.target.getVideoData();
           const queue = queueRef.current;
           if (ytIdx >= 0 && ytIdx < queue.length) {
             dispatch({ type: 'JUMP_TO_INDEX', payload: ytIdx });
+          }
+          // Update with real YouTube video title & artist
+          if (videoData?.title) {
+            dispatch({
+              type: 'UPDATE_YT_SONG',
+              payload: {
+                title: videoData.title,
+                artist: videoData.author || 'YouTube Music',
+                index: ytIdx,
+              },
+            });
           }
         } catch { /* ignore */ }
         break;

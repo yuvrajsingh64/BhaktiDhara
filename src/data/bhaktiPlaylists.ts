@@ -30,21 +30,6 @@ const hindiBhaktiSongs: Song[] = [
   { id: 'rang-de-basanti', title: 'Rang De Basanti Chola', titleHindi: 'रंग दे बसंती चोला', artist: 'Lata Mangeshkar', duration: '5:15', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan' },
 ];
 
-const mahadevSongs: Song[] = [
-  { id: 'shiv-tandav-stotram', title: 'Shiv Tandav Stotram', titleHindi: 'शिव तांडव स्तोत्रम', artist: 'Shankar Mahadevan', duration: '8:44', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'mantra', deity: 'Shiva' },
-  { id: 'namo-namo-shankara', title: 'Namo Namo Shankara', titleHindi: 'नमो नमो शंकरा', artist: 'Amit Trivedi', duration: '4:36', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'bam-bam-bhole', title: 'Bam Bam Bhole', titleHindi: 'बम बम भोले', artist: 'Hansraj Raghuwanshi', duration: '5:12', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'mahakal-ke-diwane', title: 'Mahakal Ke Diwane', titleHindi: 'महाकाल के दीवाने', artist: 'Hansraj Raghuwanshi', duration: '6:30', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'bholenath-ke-bhakt', title: 'Bholenath Ke Bhakt', titleHindi: 'भोलेनाथ के भक्त', artist: 'Sachet-Parampara', duration: '4:18', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'mera-bhola-hai-bhandari', title: 'Mera Bhola Hai Bhandari', titleHindi: 'मेरा भोला है भंडारी', artist: 'Hansraj Raghuwanshi', duration: '7:22', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'shiv-shankar-ko-jisne', title: 'Shiv Shankar Ko Jisne Pooja', titleHindi: 'शिव शंकर को जिसने पूजा', artist: 'Anuradha Paudwal', duration: '5:55', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'om-namah-shivaya-dhun', title: 'Om Namah Shivaya Dhun', titleHindi: 'ॐ नमः शिवाय धुन', artist: 'Anuradha Paudwal', duration: '11:20', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'mantra', deity: 'Shiva' },
-  { id: 'shivratri-special', title: 'Shivratri Special Mashup', titleHindi: 'शिवरात्रि स्पेशल मैशअप', artist: 'Various Artists', duration: '8:45', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'kaun-hai-woh', title: 'Kaun Hai Woh', titleHindi: 'कौन है वो', artist: 'Kailash Kher', duration: '5:08', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'bam-lehri', title: 'Bam Lehri', titleHindi: 'बम लहरी', artist: 'Kailash Kher', duration: '4:45', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'devon-ke-dev-mahadev', title: 'Devon Ke Dev Mahadev', titleHindi: 'देवों के देव महादेव', artist: 'Ravindra Jain', duration: '6:33', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-];
-
 const bhojpuriBhaktiSongs: Song[] = [
   { id: 'chhathi-maiya-aaili', title: 'Chhathi Maiya Aaili', titleHindi: 'छठी मइया आईली', artist: 'Pawan Singh', duration: '5:42', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
   { id: 'jai-ho-chhathi-maiya', title: 'Jai Ho Chhathi Maiya', titleHindi: 'जय हो छठी मइया', artist: 'Khesari Lal Yadav', duration: '6:15', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
@@ -69,16 +54,6 @@ export const bhaktiPlaylists: BhaktiPlaylist[] = [
     source: 'youtube-music',
     sourceUrl: 'https://music.youtube.com/playlist?list=PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9',
     youtubePlaylistId: 'PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9',
-  },
-  {
-    id: 'mahadev',
-    title: 'Mahadev Trending Songs 2025',
-    titleHindi: 'महादेव ट्रेंडिंग 2025',
-    description: 'All the trending Bholenath songs of 2025 — invoke courage, devotion, and supreme protection with Mahadev.',
-    songCount: mahadevSongs.length,
-    songs: mahadevSongs,
-    source: 'spotify',
-    sourceUrl: 'https://open.spotify.com/playlist/6NSKbSMT7IREBdzM9YtgqQ',
   },
   {
     id: 'bhojpuri-bhakti',
