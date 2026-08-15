@@ -732,6 +732,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
                 listType: 'playlist',
                 index: startIndex,
               });
+              if (typeof startIndex === 'number' && startIndex > 0 && yt.playVideoAt) {
+                setTimeout(() => {
+                  try { yt.playVideoAt(startIndex); } catch { /* ignore */ }
+                }, 150);
+              }
             } else {
               if (yt.cuePlaylist) {
                 yt.cuePlaylist({
