@@ -138,15 +138,40 @@ export default function HomePage() {
             </Link>
           </nav>
 
-          {/* Nav chips */}
-          <div className="mt-8 flex flex-wrap items-center gap-2 text-xs">
-            <Link href="/playlists" className="bhakti-chip">All Playlists</Link>
+          {/* Contact & Socials */}
+          <div className="mt-8 flex flex-wrap items-center gap-4 text-xs text-sand/80">
+            <a
+              href="https://instagram.com/yuvrajxsingh"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex items-center gap-1.5 hover:text-cream transition-colors bhakti-chip !py-1 !px-3"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-saffron">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
+              <span>@yuvrajxsingh</span>
+            </a>
+            <a
+              href="mailto:yuvrajsingh64d@gmail.com"
+              className="flex items-center gap-1.5 hover:text-cream transition-colors bhakti-chip !py-1 !px-3"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-saffron">
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              <span>yuvrajsingh64d@gmail.com</span>
+            </a>
           </div>
 
-          {/* Legal */}
-          <div className="mt-8 space-y-3 text-xs leading-relaxed text-sand/55">
+          {/* Legal & Credit */}
+          <div className="mt-8 space-y-3 text-xs leading-relaxed text-sand/55 border-t border-cream/10 pt-6">
             <p>Audio plays through YouTube&apos;s embedded player. Nothing is hosted on this site, and all rights stay with the labels, composers and performers.</p>
-            <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-sand/40">© 2026 bhaktidhara.in</p>
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1 font-mono text-[0.65rem] tracking-[0.2em] uppercase text-sand/50">
+              <span>© 2026 bhaktidhara.in</span>
+              <span className="text-saffron/90 font-medium">Made with ❤️ by Yuvraj Singh</span>
+            </div>
           </div>
         </div>
       </footer>

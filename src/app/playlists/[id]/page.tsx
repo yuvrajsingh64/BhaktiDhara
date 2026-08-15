@@ -55,11 +55,11 @@ export default function PlaylistPage({ params }: { params: Promise<{ id: string 
       </header>
 
       {/* Playlist Info */}
-      <div className="mx-auto max-w-3xl px-5 pt-10 pb-6 sm:px-8">
-        <p className="font-mono text-[0.65rem] tracking-[0.28em] uppercase text-sand/60">
+      <div className="mx-auto max-w-3xl px-5 pt-8 pb-6 sm:px-8">
+        <p className="mb-3 font-mono text-[0.7rem] font-medium tracking-[0.28em] uppercase text-sand/60">
           {playlist.songCount} songs · {totalHours > 0 ? `${totalHours}h ` : ''}{totalMins} min
         </p>
-        <h1 className="mt-2 font-display text-5xl font-bold leading-[0.9] text-cream sm:text-6xl lg:text-7xl">
+        <h1 className="font-display text-4xl font-extrabold leading-tight text-cream sm:text-6xl lg:text-7xl">
           {playlist.titleHindi}
         </h1>
         <p className="mt-3 font-mono text-xs tracking-[0.3em] uppercase text-sand/70">

@@ -713,6 +713,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string, autoPlay: boolean = true) => {
+    queueRef.current = songs;
+    currentSongRef.current = songs[startIndex] || null;
+
     dispatch({ type: 'PLAY_PLAYLIST', payload: { songs, startIndex, autoPlay } });
 
     if (youtubePlaylistId) {
