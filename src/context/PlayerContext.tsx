@@ -287,6 +287,31 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => { currentSongRef.current = state.currentSong; }, [state.currentSong]);
   useEffect(() => { simTimeRef.current = state.currentTime; }, [state.currentTime]);
 
+  // ── Global interaction listener to bypass browser autoplay blocks ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleFirstInteraction = () => {
+      if (isYtMode.current && ytPlayerRef.current) {
+        try {
+          const yt = ytPlayerRef.current;
+          const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
+          if (pState === -1 || pState === 5 || pState === 2) {
+            yt.playVideo?.();
+          }
+        } catch { /* ignore */ }
+      }
+    };
+
+    window.addEventListener('pointerdown', handleFirstInteraction, { once: true });
+    window.addEventListener('keydown', handleFirstInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, []);
+
   // ── Load YouTube IFrame API ──
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -298,7 +323,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           height: '1',
           width: '1',
           playerVars: {
-            autoplay: 0,
+            autoplay: 1,
             controls: 0,
             disablekb: 1,
             fs: 0,
@@ -307,6 +332,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             origin: window.location.origin,
           },
           events: {
+            onReady: (event: any) => {
+              try {
+                if (ytPlaylistIdRef.current) {
+                  event.target.playVideo();
+                }
+              } catch { /* ignore */ }
+            },
             onStateChange: handleYtStateChange,
             onError: (e: any) => console.warn('YT Player error:', e.data),
           },

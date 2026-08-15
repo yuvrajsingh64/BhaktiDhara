@@ -34,6 +34,12 @@ export default function MusicPlayer() {
   const artwork = currentSong?.artwork || '/images/krishna.jpg';
   const progressPercent = progress || 0;
 
+  const [imgSrc, setImgSrc] = useState<string>(artwork);
+
+  useEffect(() => {
+    setImgSrc(artwork);
+  }, [artwork]);
+
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
       <div className="pointer-events-auto">
@@ -41,8 +47,15 @@ export default function MusicPlayer() {
           {/* Player pill */}
           <div className="bhakti-glass mb-3 flex items-center gap-3 rounded-full p-2 pr-3 sm:gap-4 sm:p-3 sm:pr-5">
             {/* Album art */}
-            <div className="relative size-12 shrink-0 rounded-full overflow-hidden sm:size-14">
-              <Image src={artwork} alt="" fill className="object-cover" />
+            <div className="relative size-12 shrink-0 rounded-full overflow-hidden sm:size-14 bg-saffron/20 border border-cream/10">
+              <Image
+                src={imgSrc || '/images/krishna.jpg'}
+                alt={songTitle}
+                fill
+                className="object-cover"
+                onError={() => setImgSrc('/images/krishna.jpg')}
+                unoptimized={typeof imgSrc === 'string' && imgSrc.startsWith('http')}
+              />
             </div>
 
             {/* Song info + seek */}
