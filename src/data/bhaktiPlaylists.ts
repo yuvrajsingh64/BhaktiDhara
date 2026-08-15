@@ -13,34 +13,829 @@ export interface BhaktiPlaylist {
 }
 
 const hindiBhaktiSongs: Song[] = [
-  { id: 'achyutam-keshavam', title: 'Achyutam Keshavam', titleHindi: 'अच्युतम केशवम', artist: 'Anuradha Paudwal', duration: '6:12', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan', deity: 'Krishna' },
-  { id: 'hanuman-chalisa-hb', title: 'Hanuman Chalisa', titleHindi: 'हनुमान चालीसा', artist: 'Hariharan', duration: '9:31', artwork: '/images/hanuman.jpg', audioUrl: '#', category: 'bhajan', deity: 'Hanuman' },
-  { id: 'om-jai-jagdish-hare', title: 'Om Jai Jagdish Hare', titleHindi: 'ॐ जय जगदीश हरे', artist: 'Anuradha Paudwal', duration: '7:45', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'aarti', deity: 'Vishnu' },
-  { id: 'aarti-kunj-bihari', title: 'Aarti Kunj Bihari Ki', titleHindi: 'आरती कुंजबिहारी की', artist: 'Anuradha Paudwal', duration: '5:18', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'aarti', deity: 'Krishna' },
-  { id: 'gayatri-mantra-hb', title: 'Gayatri Mantra', titleHindi: 'गायत्री मंत्र', artist: 'Suresh Wadkar', duration: '8:02', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'mantra' },
-  { id: 'shri-ram-chandra-kripalu', title: 'Shri Ram Chandra Kripalu', titleHindi: 'श्री रामचन्द्र कृपालु', artist: 'Ravindra Jain', duration: '6:55', artwork: '/images/ram.jpg', audioUrl: '#', category: 'bhajan', deity: 'Ram' },
-  { id: 'raghupati-raghav', title: 'Raghupati Raghav Raja Ram', titleHindi: 'रघुपति राघव राजा राम', artist: 'Lata Mangeshkar', duration: '4:32', artwork: '/images/ram.jpg', audioUrl: '#', category: 'bhajan', deity: 'Ram' },
-  { id: 'he-ram-he-ram', title: 'Hey Ram Hey Ram', titleHindi: 'हे राम हे राम', artist: 'Jagjit Singh', duration: '5:48', artwork: '/images/ram.jpg', audioUrl: '#', category: 'bhajan', deity: 'Ram' },
-  { id: 'govind-bolo-hari', title: 'Govind Bolo Hari Gopal Bolo', titleHindi: 'गोविन्द बोलो हरि गोपाल बोलो', artist: 'Anup Jalota', duration: '7:14', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan', deity: 'Krishna' },
-  { id: 'vaishnav-jan-to', title: 'Vaishnav Jan To', titleHindi: 'वैष्णव जन तो', artist: 'Lata Mangeshkar', duration: '5:30', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan' },
-  { id: 'payoji-maine', title: 'Payoji Maine Ram Ratan Dhan Payo', titleHindi: 'पायोजी मैंने राम रतन धन पायो', artist: 'Anup Jalota', duration: '8:45', artwork: '/images/ram.jpg', audioUrl: '#', category: 'bhajan', deity: 'Ram' },
-  { id: 'shri-ganeshaya-dheemahi', title: 'Shri Ganeshaya Dheemahi', titleHindi: 'श्री गणेशाय धीमहि', artist: 'Shankar Mahadevan', duration: '5:22', artwork: '/images/ganesh.jpg', audioUrl: '#', category: 'mantra', deity: 'Ganesh' },
-  { id: 'man-mera-mandir', title: 'Man Mera Mandir Shiv Meri Puja', titleHindi: 'मन मेरा मंदिर शिव मेरी पूजा', artist: 'Anuradha Paudwal', duration: '6:08', artwork: '/images/shiva.jpg', audioUrl: '#', category: 'bhajan', deity: 'Shiva' },
-  { id: 'itni-shakti-hame', title: 'Itni Shakti Hame Dena Data', titleHindi: 'इतनी शक्ति हमें देना दाता', artist: 'Sushma Shreshtha', duration: '4:55', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan' },
-  { id: 'rang-de-basanti', title: 'Rang De Basanti Chola', titleHindi: 'रंग दे बसंती चोला', artist: 'Lata Mangeshkar', duration: '5:15', artwork: '/images/krishna.jpg', audioUrl: '#', category: 'bhajan' },
+  {
+    "id": "30YNd5fEGMo",
+    "title": "Narayan Mil Jayega",
+    "titleHindi": "Narayan Mil Jayega (Lyrical): Jubin Nautiyal |Payal Dev |Manoj Muntashir Shukla|Kashan|Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/30YNd5fEGMo/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "1qmPNot9NJs",
+    "title": "Jubin Nautiyal: Shri Krishna Govind Hare Murari",
+    "titleHindi": "Jubin Nautiyal: Shri Krishna Govind Hare Murari | Raaj Aashoo, Murali A | Bhushan Kumar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/1qmPNot9NJs/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "vBJ5HSs-N9o",
+    "title": "Jubin Nautiyal: Mere Ghar Ram Aaye Hain",
+    "titleHindi": "Jubin Nautiyal: Mere Ghar Ram Aaye Hain | Payal Dev | Manoj Muntashir, Dipika C, Lovesh N |Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/vBJ5HSs-N9o/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "uSb0M_UQE1o",
+    "title": "Har Har Mahadev",
+    "titleHindi": "Har Har Mahadev (Video) Sachet Tandon, Parampara Tandon | DJ Shadow Dubai | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/uSb0M_UQE1o/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "_pWYaGi_FiM",
+    "title": "Mere Baba Song: Jubin Nautiyal",
+    "titleHindi": "Mere Baba Song: Jubin Nautiyal | Payal Dev | Manoj Muntashir | Kashan Shahid | Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/_pWYaGi_FiM/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "fCdS-UShx4c",
+    "title": "Jubin Nautiyal: Meri Maa Ke Barabar Koi Nahi",
+    "titleHindi": "Jubin Nautiyal: Meri Maa Ke Barabar Koi Nahi | Payal Dev | Manoj Muntashir | Lovesh N |Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/fCdS-UShx4c/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "id5_3dKvEBg",
+    "title": "DHAK BAJA KASHOR BAJA Video Song",
+    "titleHindi": "DHAK BAJA KASHOR BAJA Video Song || Shreya Ghoshal || Jeet Gannguli || Durga Puja Special Songs",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/id5_3dKvEBg/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "uJtoY919sjU",
+    "title": "Mere Bhole Nath",
+    "titleHindi": "Mere Bhole Nath (Video) Jubin Nautiyal | Payal Dev, Vishal Bagh | Devotional Song | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/uJtoY919sjU/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "aLBImFnsWHM",
+    "title": "Shiv Tandav (Rock Version) Aigiri Nandini",
+    "titleHindi": "Shiv Tandav (Rock Version) Aigiri Nandini | Sachet Tandon & Parampara Tandon | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/aLBImFnsWHM/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "rNRgdSMjoDM",
+    "title": "Om Jai Jagdish Hare Aarti",
+    "titleHindi": "Om Jai Jagdish Hare Aarti Ft. Divya Khosla Kumar | Gulshan Kumar | Manan B, Rajeev K | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/rNRgdSMjoDM/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "miJXSrm3gz4",
+    "title": "Hare Krishna Hare Rama",
+    "titleHindi": "Hare Krishna Hare Rama |Jubin Nautiyal |Shabbir Ahmed,Ayaz Kohli | Lovesh Nagar| Janmashtami Special",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/miJXSrm3gz4/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "YkyYy8oRz_Y",
+    "title": "Jubin Nautiyal: Meri Mai",
+    "titleHindi": "Jubin Nautiyal: Meri Mai | Payal Dev, Manoj Muntashir, Lovesh Nagar | Hindi Song | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/YkyYy8oRz_Y/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "CLJ7qlH7XEo",
+    "title": "Jubin Nautiyal: Main Balak Tu Mata",
+    "titleHindi": "Jubin Nautiyal: Main Balak Tu Mata | Gulshan Kumar | Manan B | Manoj M | Akanksha P | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/CLJ7qlH7XEo/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "JGnK-KMAhr0",
+    "title": "Hare Krishna Hare",
+    "titleHindi": "Hare Krishna Hare | Palak Muchhal | Akanksha Puri | Poonam T | Shabbir A | Rajeev K | Bhushan Kumar",
+    "artist": "T-Series Bhakti Sagar",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/JGnK-KMAhr0/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "yutx7mSPrM8",
+    "title": "MAIYA TERI JAI JAIKAAR Video",
+    "titleHindi": "MAIYA TERI JAI JAIKAAR Video |Arijit Singh Jeet Gannguli Gurmeet Choudhary | Navratri Special Song",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/yutx7mSPrM8/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "nEaYnyBW2Zk",
+    "title": "Ram Naam Se Jagmag Hai : Sachet Tandon",
+    "titleHindi": "Ram Naam Se Jagmag Hai (Lyrical Video): Sachet Tandon | Shabbir Ahmed | Hemant Tiwari | Lovesh Nagar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/nEaYnyBW2Zk/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "cXQLtGNcSxE",
+    "title": "Ye Chola Maa Tera Chola 🙏: Sachet - Parampara",
+    "titleHindi": "Ye Chola Maa Tera Chola (Full Bhajan)🙏: Sachet - Parampara | Payal Dev | Manoj M | Navratri Special",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/cXQLtGNcSxE/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "XRvizAylhDo",
+    "title": "Kaun Kehte Hain Bhagwan Aate Nahi (Achyutam Keshavam) Tulsi K, Jubin N, Payal D, Lovesh N",
+    "titleHindi": "Kaun Kehte Hain Bhagwan Aate Nahi (Achyutam Keshavam) Tulsi K, Jubin N, Payal D, Lovesh N |Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/XRvizAylhDo/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "iuSNi7ChFww",
+    "title": "Siya Ram (सियाराम) Jubin Nautiyal, Jaya Kishori",
+    "titleHindi": "Siya Ram (सियाराम) Jubin Nautiyal, Jaya Kishori | Ram Bhajan |Raaj Aashoo, Seepi Jha | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/iuSNi7ChFww/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "9xcFFz8nZgI",
+    "title": "Jubin Nautiyal: Govind Bolo Song",
+    "titleHindi": "Jubin Nautiyal: Govind Bolo Song | Raaj Aashoo | Aditya D, Pankaj N | Bhushan Kumar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/9xcFFz8nZgI/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Sv6jetJDmdM",
+    "title": "RAM LALA By Vishal Mishra",
+    "titleHindi": "RAM LALA (Full Bhajan) By Vishal Mishra | Manoj Muntashir | Lovesh Nagar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Sv6jetJDmdM/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "aY7uTMIsIm0",
+    "title": "HAR HAR SHAMBHU by Jubin Nautiyal, Payal Dev, Manoj Muntashir Shukla, Kashan",
+    "titleHindi": "HAR HAR SHAMBHU (Full Bhajan) by Jubin Nautiyal, Payal Dev, Manoj Muntashir Shukla, Kashan |T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/aY7uTMIsIm0/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "7rP9SyejAtc",
+    "title": "RAGHUPATI RAGHAV RAJA RAM (Bhajan) by Tulsi Kumar",
+    "titleHindi": "RAGHUPATI RAGHAV RAJA RAM (Bhajan) by Tulsi Kumar | Shabbir Ahmed | Lovesh Nagar | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/7rP9SyejAtc/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "WFABZjZz1mc",
+    "title": "Hanuman Chalisa (हनुमान चालीसा)",
+    "titleHindi": "Hanuman Chalisa (हनुमान चालीसा) | Sachet Tandon | Bharat Goel | Bhushan Kumar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/WFABZjZz1mc/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "KGXqTWVhiGI",
+    "title": "Avadh Mein Laute Hai Shri Ram Bhajan",
+    "titleHindi": "Avadh Mein Laute Hai Shri Ram Bhajan | Sonu Nigam | Shreyas Puranik | @AuthorAshutoshAgnihotri",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/KGXqTWVhiGI/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "6Q6pTEoNL6w",
+    "title": "Om Namah Shivay",
+    "titleHindi": "Om Namah Shivay | Udit Narayan | Anis Ali Sabri | Shabbir Ahmed | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/6Q6pTEoNL6w/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "QxQLF45M7yY",
+    "title": "Aaye Ram Mere",
+    "titleHindi": "Aaye Ram Mere (Video) Tulsi Kumar | Raaj Aashoo, Rashmi Virag | Lovesh Nagar | Hindi Devotional Song",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/QxQLF45M7yY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "4nVXfuOQnnw",
+    "title": "Lal Chunariya",
+    "titleHindi": "Lal Chunariya | Parampara Tandon | Shabbir Ahmed | Lovesh Nagar | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/4nVXfuOQnnw/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "IQ8axjD0YzE",
+    "title": "Aigiri Nandini Mahishasura Mardini Stotra: Jubin Nautiyal",
+    "titleHindi": "Aigiri Nandini Mahishasura Mardini Stotra: Jubin Nautiyal | Durga Devi Stotra | Powerful Devi Mantra",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/IQ8axjD0YzE/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "jlTkxfMgP7w",
+    "title": "RAM PADHAARE (Full Bhajan With Lyrics): Tulsi Kumar, Siddharth Mohan",
+    "titleHindi": "RAM PADHAARE (Full Bhajan With Lyrics): Tulsi Kumar, Siddharth Mohan | Bawa Gulzar | Pradeep Sahil",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/jlTkxfMgP7w/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "5zdr_A60nEY",
+    "title": "CHOTO SO MERO MADAN GOPAL: Tulsi Kumar",
+    "titleHindi": "CHOTO SO MERO MADAN GOPAL: Tulsi Kumar | Raaj Aashoo | Vishal Bagh | Lovesh Nagar | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/5zdr_A60nEY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "7orQRCa_pxE",
+    "title": "Mera Aapki Kripa Se",
+    "titleHindi": "Mera Aapki Kripa Se | Master Saleem | Raaj Aashoo | Murali Agarwal | Adnan A Khan",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/7orQRCa_pxE/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "4BO20QKQYlE",
+    "title": "RAM JI KA NAAM (Full Bhajan With Lyrics): Sukhwinder Singh",
+    "titleHindi": "RAM JI KA NAAM (Full Bhajan With Lyrics): Sukhwinder Singh | Jai Shri Ram | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/4BO20QKQYlE/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "x59MAFk9wk8",
+    "title": "Aala Re Aala Ganesha",
+    "titleHindi": "Aala Re Aala Ganesha | Sachet Tandon | Poonam | Bhushan Kumar | Ganesh Chaturthi Special Song",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/x59MAFk9wk8/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "qdSEuJydQaU",
+    "title": "KANHA TERI DEEWANI: Jaya Kishori",
+    "titleHindi": "KANHA TERI DEEWANI: Jaya Kishori | Mazel Vyas, Manoj Dutt | Raaj Aashoo | Lovesh Nagar | Seepi Jha",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/qdSEuJydQaU/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "jiwGvP8ZjmY",
+    "title": "Wo Shri Radha Rani Hai (Bhajan): Nikhil Verma, Kshl Music",
+    "titleHindi": "Wo Shri Radha Rani Hai (Bhajan): Nikhil Verma, Kshl Music | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/jiwGvP8ZjmY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "UiUBPysceNY",
+    "title": "BAM BAM BHOLE: Siddharth Mohan",
+    "titleHindi": "BAM BAM BHOLE: Siddharth Mohan | Bawa Gulzar | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/UiUBPysceNY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "KWH5ewBuDlY",
+    "title": "Shriman Narayan Hari Hari",
+    "titleHindi": "Shriman Narayan Hari Hari (Video): Siddharth Mohan | Bawa Gulzar, Mohit Bajpai | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/KWH5ewBuDlY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Xyhfk-leRYk",
+    "title": "Mahamrityunjaya Mantra",
+    "titleHindi": "Mahamrityunjaya Mantra | Shekhar Ravjiani | Bhushan Kumar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Xyhfk-leRYk/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "kfSSwxS9aOs",
+    "title": "Jai Jai Radha Raman Hari Bol (जय जय राधा रमन हरि बोल)",
+    "titleHindi": "Jai Jai Radha Raman Hari Bol (जय जय राधा रमन हरि बोल) | Krishna Bhajan |Kavita Seth | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/kfSSwxS9aOs/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Eu9M9Q7eA5w",
+    "title": "Maa Tera Aashirwaad Hai (Bhajan): Siddharth Mohan, Bawa Gulzar, Pradeep Sahil",
+    "titleHindi": "Maa Tera Aashirwaad Hai (Bhajan): Siddharth Mohan, Bawa Gulzar, Pradeep Sahil",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Eu9M9Q7eA5w/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "fCA6FCbnIzA",
+    "title": "Wo Hain Ram Bhajan by Manoj Tiwari",
+    "titleHindi": "Wo Hain Ram Bhajan by Manoj Tiwari | Naresh Vikal | Santosh Kumar | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/fCA6FCbnIzA/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "x_7rwI3x6qE",
+    "title": "GAJANAN Lyrical Video Song",
+    "titleHindi": "GAJANAN Lyrical Video Song |Ajay Devgn | Sukhwinder Singh | Jeet Gannguli |Lalbaugcha Raja |T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/x_7rwI3x6qE/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "9qXBo2-rUHk",
+    "title": "Janmashtami Celebrations",
+    "titleHindi": "Janmashtami Celebrations | Audio Jukebox | Happy Janmashtami |  T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/9qXBo2-rUHk/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "lG0dP0AURIs",
+    "title": "Gajanan",
+    "titleHindi": "Gajanan | Sachet Tandon |  Shabbir Ahmed | Bhushan Kumar | Ganesh Chaturthi Special Song | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/lG0dP0AURIs/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "gj5VkglD6BI",
+    "title": "Ganesh Chaturthi Special Songs 2021 - Ganpati Bappa Moraya",
+    "titleHindi": "Ganesh Chaturthi Special Songs  2021 - Ganpati Bappa Moraya ||  Ganpati Bollywood Songs | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/gj5VkglD6BI/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "-YTt4x1wDfg",
+    "title": "HAR HAR SHAMBHU Bhajan Jubin Nautiyal, Payal Dev, Manoj Muntashir Shukla, Kashan",
+    "titleHindi": "HAR HAR SHAMBHU (Audio) Bhajan Jubin Nautiyal, Payal Dev, Manoj Muntashir Shukla, Kashan",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/-YTt4x1wDfg/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "wqRIAN3OGc4",
+    "title": "Har Har Shambhu (Lyrics)",
+    "titleHindi": "Har Har Shambhu (Lyrics) | Jubin Nautiyal, Payal Dev, Manoj Muntashir Shukla, Kashan |T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/wqRIAN3OGc4/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "vV-hWw57xsM",
+    "title": "KANHA TERI DEEWANI : Jaya Kishori",
+    "titleHindi": "KANHA TERI DEEWANI (Audio): Jaya Kishori | Mazel Vyas, Manoj Dutt | Raaj Aashoo | Lovesh N | Seepi J",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/vV-hWw57xsM/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "bIAgVjk7wkA",
+    "title": "Hanuman Ki Bhujayien Vishal Mishra",
+    "titleHindi": "Hanuman Ki Bhujayien (Audio) Vishal Mishra | Payal Dev, Manoj MS | Sanat, Hardik | Lovesh| Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/bIAgVjk7wkA/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "BjUV6FbuWXI",
+    "title": "Mourya Re (Remix) - Ganpati Visarjan: Shah Rukh Khan",
+    "titleHindi": "Mourya Re (Remix) - Ganpati Visarjan: Shah Rukh Khan | Kedrock, SD Style | Don",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/BjUV6FbuWXI/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "RMDcHp3H5mI",
+    "title": "Shriman Narayan Hari Hari : Siddharth Mohan",
+    "titleHindi": "Shriman Narayan Hari Hari (Audio): Siddharth Mohan | Bawa Gulzar, Mohit Bajpai | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/RMDcHp3H5mI/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "M6XU9-Ob2mw",
+    "title": "Mere Sai",
+    "titleHindi": "Mere Sai (Video) | Karthik |  Manoj Muntashir | T-Series",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/M6XU9-Ob2mw/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "uX7OMp4EVnw",
+    "title": "Divine Melodies Of Lord Krishna: Janmashtami Special (Audio Jukebox)",
+    "titleHindi": "Divine Melodies Of Lord Krishna: Janmashtami Special (Audio Jukebox) | Krishna Janmashtami Songs",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/uX7OMp4EVnw/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "aJdxIP6nOBc",
+    "title": "Aigiri Nandini - Mahishasura Mardini Stotra (Lyrics)",
+    "titleHindi": "Aigiri Nandini - Mahishasura Mardini Stotra (Lyrics) | Jubin Nautiyal | Navratri Special Song",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/aJdxIP6nOBc/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "U_NDNXzXOdw",
+    "title": "CHOTO SO MERO MADAN GOPAL : Tulsi Kumar",
+    "titleHindi": "CHOTO SO MERO MADAN GOPAL (Audio): Tulsi Kumar | Raaj A, Vishal B| Lovesh N | Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/U_NDNXzXOdw/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "IGbzcoG2MIs",
+    "title": "Mere Kanha Bhool Na Jaana : Jubin Nautiyal",
+    "titleHindi": "Mere Kanha Bhool Na Jaana (Audio): Jubin Nautiyal | Manoj Muntashir | Lovesh Nagar, Ashish Kulkarni",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/IGbzcoG2MIs/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "YADTxAEr-S8",
+    "title": "AALA RE AALA GANESHA (REMIX): Ganpati Aagman Special",
+    "titleHindi": "AALA RE AALA GANESHA (REMIX): Ganpati Aagman Special | Kedrock, SD Style | Sajid-Wajid, Dr. Ganesh C",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/YADTxAEr-S8/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "mXN2Az46i2E",
+    "title": "Jubin Nautiyal: Main Balak Tu Mata LoFi Mix By KEDROCK & SD Style",
+    "titleHindi": "Jubin Nautiyal: Main Balak Tu Mata LoFi Mix By KEDROCK & SD Style | Manan Bhardwaj, Manoj Muntashir",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/mXN2Az46i2E/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "VWJjoR7gB7A",
+    "title": "Hanuman Chalisa With Lyrics",
+    "titleHindi": "Hanuman Chalisa With Lyrics | हनुमान चालीसा | Jai hanuman Gyan Gun Sagar |  Traditional",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/VWJjoR7gB7A/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "CiwlhIiZtxc",
+    "title": "Hanuman Ki Bhujayien",
+    "titleHindi": "Hanuman Ki Bhujayien (Lyrical) Vishal Mishra |Payal Dev, Manoj MS |Sanat, Hardik |Lovesh |Bhushan K",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/CiwlhIiZtxc/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "BLlYvnNxbgk",
+    "title": "RAM PADHAARE : Tulsi Kumar, Siddharth Mohan",
+    "titleHindi": "RAM PADHAARE (Full Audio): Tulsi Kumar, Siddharth Mohan | Bawa Gulzar | Pradeep Sahil",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/BLlYvnNxbgk/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "mdCL8diDi6k",
+    "title": "Jai Jai Radha Raman Hari Bol",
+    "titleHindi": "Jai Jai Radha Raman Hari Bol (Audio) | Krishna Bhajan | Kavita Seth | Lovesh Nagar | Bhushan Kumar",
+    "artist": "T-Series",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/mdCL8diDi6k/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  }
 ];
 
 const bhojpuriBhaktiSongs: Song[] = [
-  { id: 'chhathi-maiya-aaili', title: 'Chhathi Maiya Aaili', titleHindi: 'छठी मइया आईली', artist: 'Pawan Singh', duration: '5:42', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
-  { id: 'jai-ho-chhathi-maiya', title: 'Jai Ho Chhathi Maiya', titleHindi: 'जय हो छठी मइया', artist: 'Khesari Lal Yadav', duration: '6:15', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
-  { id: 'kaanch-hi-baans-ke', title: 'Kaanch Hi Baans Ke Bahangiya', titleHindi: 'काँच ही बाँस के बहंगिया', artist: 'Sharda Sinha', duration: '7:38', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
-  { id: 'ho-deenanath', title: 'Ho Deenanath', titleHindi: 'हो दीनानाथ', artist: 'Sharda Sinha', duration: '8:10', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Surya' },
-  { id: 'uga-ho-suraj-dev', title: 'Uga Ho Suraj Dev', titleHindi: 'उगा हो सूरज देव', artist: 'Anuradha Paudwal', duration: '6:22', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Surya' },
-  { id: 'maiya-mori-nim', title: 'Maiya Mori Mai Nim Ke Patiya', titleHindi: 'मइया मोरी मैं नीम के पतिया', artist: 'Pawan Singh', duration: '5:55', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Durga' },
-  { id: 'kelwa-ke-paat-par', title: 'Kelwa Ke Paat Par', titleHindi: 'केलवा के पात पर', artist: 'Sharda Sinha', duration: '6:48', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
-  { id: 'chalat-musafir', title: 'Chalat Musafir Moh Liyo Re', titleHindi: 'चलत मुसाफिर मोह लियो रे', artist: 'Sharda Sinha', duration: '7:15', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan' },
-  { id: 'pahile-pahil-chhathi', title: 'Pahile Pahil Chhathi Maiya', titleHindi: 'पहिले पहिल छठी मइया', artist: 'Pawan Singh', duration: '5:30', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
-  { id: 'chhath-geet-mashup', title: 'Chhath Geet Mashup', titleHindi: 'छठ गीत मैशअप', artist: 'Various Artists', duration: '9:12', artwork: '/images/devi.jpg', audioUrl: '#', category: 'bhajan', deity: 'Chhathi Maiya' },
+  {
+    "id": "ylZjfgcnZLU",
+    "title": "",
+    "titleHindi": "#Video | आहे मालिन | Aahe Maalin | #Beauty Pandey | Navratri Song 2025",
+    "artist": "Sanskar Devotional",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/ylZjfgcnZLU/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Fszzq9PETqU",
+    "title": "Nimiyan Ke Dadhiya",
+    "titleHindi": "Nimiyan Ke Dadhiya",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Fszzq9PETqU/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "9cbt9TQHlrg",
+    "title": "Pawan Singh 2021 का हर घर में बजने वाला देवी गीत - गंगा जी नहईबो ए मईया - Bhojpuri Devi Geet",
+    "titleHindi": "#Pawan Singh 2021 का हर घर में बजने वाला देवी गीत - गंगा जी नहईबो ए मईया - Bhojpuri Devi Geet",
+    "artist": "The Bhojpuri",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/9cbt9TQHlrg/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Rs18Glvolb4",
+    "title": "Power Star Pawan Singh Latest Devi Geet 2024 - Lami Lami Kesh",
+    "titleHindi": "Power Star Pawan Singh Latest Devi Geet 2024 - Lami Lami Kesh | Ft. Shweta Mahara | T-Series",
+    "artist": "T-Series Hamaar Bhojpuri",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Rs18Glvolb4/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "VVfG5WTB4hk",
+    "title": "- अडहुल के फुल",
+    "titleHindi": "#Video - अडहुल के फुल | #Pawan Singh, #Shivani Singh | Adahul Ke Phool | Bhojpuri New Devi Geet 2023",
+    "artist": "Maa Amma Films Bhakti",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/VVfG5WTB4hk/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "yG1ngGJAREY",
+    "title": "Full Video",
+    "titleHindi": "Full Video | मईया बारी सुकवार | #Karina Pandey | #Sovita Pandey | Maiya Bari Sukwar | Navratri Song",
+    "artist": "PANDEY SISTERS  OFFICIAL",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/yG1ngGJAREY/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "EQ7jAYOkPcQ",
+    "title": "",
+    "titleHindi": "#Video | अलग अलग रूप में माई | #Pawan Singh | #Bhojpuri Mata Bhajan | Alga Rup Me Mai | #Bhakti Song",
+    "artist": "Bhakti Duniya",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/EQ7jAYOkPcQ/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "7aDboicw8Ak",
+    "title": "। गंगा जी नहईबो ऐ मईया। Pawan Singh",
+    "titleHindi": "#VIDEO। गंगा जी नहईबो ऐ मईया। #Pawan Singh | Ganga ji Nahaibo Ye Maiya। Bhojpuri Navratri Song 2021",
+    "artist": "Taanwa Bhojpuri",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/7aDboicw8Ak/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "gi_8XSl4Mvo",
+    "title": "",
+    "titleHindi": "#VIDEO | सुना राजा अरहुल ताजा | #Khesari Lal Yadav | Suna Raja Adahul Taja | Bhojpuri Navratri Song",
+    "artist": "Jhankar Music Bhojpuri",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/gi_8XSl4Mvo/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "7MMQo16jvMs",
+    "title": "Mela Me Jhamela",
+    "titleHindi": "Mela Me Jhamela",
+    "artist": "Ritesh Pandey",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/7MMQo16jvMs/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "JeFGbBbcEow",
+    "title": "Maai Ke Mandir Me",
+    "titleHindi": "Maai Ke Mandir Me",
+    "artist": "Arvind Akela Kallu Ji",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/JeFGbBbcEow/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "Z75yD3osIak",
+    "title": "Jode Chunri - Jode Kalsha",
+    "titleHindi": "Jode Chunri - Jode Kalsha",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/Z75yD3osIak/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "b2oRwwb04Bo",
+    "title": "Mann Bhave Maiya Ke Chunariya",
+    "titleHindi": "Mann Bhave Maiya Ke Chunariya",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/b2oRwwb04Bo/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "FT5_OEAk2r4",
+    "title": "Nimiya Ke Dadhiya Dole",
+    "titleHindi": "Nimiya Ke Dadhiya Dole",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/FT5_OEAk2r4/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "5L9A33jqUQ0",
+    "title": "Karpur Gauram Karunavtaram",
+    "titleHindi": "Karpur Gauram Karunavtaram",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/5L9A33jqUQ0/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "ceTzk3TGS0I",
+    "title": "Maiya Ke Aarti",
+    "titleHindi": "Maiya Ke Aarti",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/ceTzk3TGS0I/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "6F0ueW6Du5o",
+    "title": "Hamni Ke Chodi Ke Nagariya",
+    "titleHindi": "Hamni Ke Chodi Ke Nagariya",
+    "artist": "Pawan Singh",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/6F0ueW6Du5o/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "EhfsB5_3f3s",
+    "title": "",
+    "titleHindi": "#Video | #Pawan Singh - पवन करे पुजाई | Pawan Kare Pujai - Khushboo Jain |  #Bhojpuri Devi Geet 2023",
+    "artist": "Niman Bhojpuri",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/EhfsB5_3f3s/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  },
+  {
+    "id": "xhg5D7YNmhA",
+    "title": "",
+    "titleHindi": "#Video | दुलरी मयरिया | #Pawan Singh | Dulri Mayariya Aa Gaili | #Bhojpuri Devi Geet | #Wave Music",
+    "artist": "Wave Music",
+    "duration": "5:00",
+    "artwork": "https://i.ytimg.com/vi/xhg5D7YNmhA/hqdefault.jpg",
+    "audioUrl": "#",
+    "category": "bhajan"
+  }
 ];
 
 export const bhaktiPlaylists: BhaktiPlaylist[] = [
@@ -69,9 +864,9 @@ export const bhaktiPlaylists: BhaktiPlaylist[] = [
 ];
 
 export const getPlaylist = (id: string): BhaktiPlaylist | undefined => {
-  return bhaktiPlaylists.find(p => p.id === id);
+  return bhaktiPlaylists.find((p) => p.id === id);
 };
 
 export const getAllPlaylistSongs = (): Song[] => {
-  return bhaktiPlaylists.flatMap(p => p.songs);
+  return bhaktiPlaylists.flatMap((p) => p.songs);
 };

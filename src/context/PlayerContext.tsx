@@ -280,9 +280,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const isYtMode = useRef(false);
   const ytPlaylistIdRef = useRef<string | null>(null);
   const queueRef = useRef<Song[]>([]);
+  const currentSongRef = useRef<Song | null>(null);
 
-  // Keep queueRef in sync
+  // Keep refs in sync
   useEffect(() => { queueRef.current = state.queue; }, [state.queue]);
+  useEffect(() => { currentSongRef.current = state.currentSong; }, [state.currentSong]);
   useEffect(() => { simTimeRef.current = state.currentTime; }, [state.currentTime]);
 
   // ── Load YouTube IFrame API ──
@@ -505,8 +507,25 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   const resume = useCallback(() => {
     dispatch({ type: 'RESUME' });
-    if (isYtMode.current && ytPlayerRef.current?.playVideo) {
-      try { ytPlayerRef.current.playVideo(); } catch { /* ignore */ }
+    if (isYtMode.current && ytPlayerRef.current) {
+      try {
+        const yt = ytPlayerRef.current;
+        if (yt.playVideo) {
+          yt.playVideo();
+        }
+        // If player was unstarted (-1) or cued (5), load/play playlist at current index
+        const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
+        if (ytPlaylistIdRef.current && (pState === -1 || pState === 5)) {
+          const currentIndex = queueRef.current.findIndex(s => s.id === currentSongRef.current?.id);
+          yt.loadPlaylist({
+            list: ytPlaylistIdRef.current,
+            listType: 'playlist',
+            index: Math.max(0, currentIndex),
+          });
+        }
+      } catch (e) {
+        console.warn('Resume error:', e);
+      }
     }
   }, []);
 
@@ -518,8 +537,24 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       }
     } else {
       dispatch({ type: 'RESUME' });
-      if (isYtMode.current && ytPlayerRef.current?.playVideo) {
-        try { ytPlayerRef.current.playVideo(); } catch { /* ignore */ }
+      if (isYtMode.current && ytPlayerRef.current) {
+        try {
+          const yt = ytPlayerRef.current;
+          if (yt.playVideo) {
+            yt.playVideo();
+          }
+          const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
+          if (ytPlaylistIdRef.current && (pState === -1 || pState === 5)) {
+            const currentIndex = queueRef.current.findIndex(s => s.id === currentSongRef.current?.id);
+            yt.loadPlaylist({
+              list: ytPlaylistIdRef.current,
+              listType: 'playlist',
+              index: Math.max(0, currentIndex),
+            });
+          }
+        } catch (e) {
+          console.warn('TogglePlay error:', e);
+        }
       }
     }
   }, [state.isPlaying]);
