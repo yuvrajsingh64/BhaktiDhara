@@ -511,12 +511,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, [state.repeatMode]);
 
   const handlePlay = useCallback(() => {
-    dispatch({ type: 'SET_IS_PLAYING', payload: true });
-  }, []);
+    // Ignore audio element events for placeholder songs — simulation handles state
+    const isPlaceholder = state.currentSong && (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
+    if (!isPlaceholder) {
+      dispatch({ type: 'SET_IS_PLAYING', payload: true });
+    }
+  }, [state.currentSong]);
 
   const handlePause = useCallback(() => {
-    dispatch({ type: 'SET_IS_PLAYING', payload: false });
-  }, []);
+    // Ignore audio element events for placeholder songs — simulation handles state
+    const isPlaceholder = state.currentSong && (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
+    if (!isPlaceholder) {
+      dispatch({ type: 'SET_IS_PLAYING', payload: false });
+    }
+  }, [state.currentSong]);
 
   // Action methods
   const playSong = useCallback((song: Song) => {
@@ -574,13 +582,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       const dur = (audio && audio.duration) || state.duration || 0;
       const targetTime = (clampedPercent / 100) * dur;
 
-      if (audio && !isNaN(targetTime)) {
+      // Sync simulation timer for placeholder songs
+      simTimeRef.current = targetTime;
+
+      if (audio && !isNaN(targetTime) && state.currentSong?.audioUrl !== '#') {
         audio.currentTime = targetTime;
       }
       dispatch({ type: 'SET_CURRENT_TIME', payload: targetTime });
       dispatch({ type: 'SET_PROGRESS', payload: clampedPercent });
     },
-    [state.duration]
+    [state.duration, state.currentSong]
   );
 
   const seekTime = useCallback(
