@@ -296,30 +296,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => { currentSongRef.current = state.currentSong; }, [state.currentSong]);
   useEffect(() => { simTimeRef.current = state.currentTime; }, [state.currentTime]);
 
-  // ── Global interaction listener to bypass browser autoplay blocks ──
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleFirstInteraction = () => {
-      if (isYtMode.current && ytPlayerRef.current) {
-        try {
-          const yt = ytPlayerRef.current;
-          const pState = yt.getPlayerState ? yt.getPlayerState() : -1;
-          if (pState === -1 || pState === 5 || pState === 2) {
-            yt.playVideo?.();
-          }
-        } catch { /* ignore */ }
-      }
-    };
-
-    window.addEventListener('pointerdown', handleFirstInteraction, { once: true });
-    window.addEventListener('keydown', handleFirstInteraction, { once: true });
-
-    return () => {
-      window.removeEventListener('pointerdown', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-  }, []);
 
   // ── Load YouTube IFrame API ──
   useEffect(() => {

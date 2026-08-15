@@ -20,8 +20,8 @@ export default function HomePage() {
 
   return (
     <main className="relative w-full bg-shade">
-      {/* Fixed Background */}
-      <div className="fixed inset-0">
+      {/* Background — absolute on mobile (avoids zoom jank), fixed on desktop */}
+      <div className="absolute inset-x-0 top-0 h-[100dvh] md:fixed md:inset-0">
         <picture>
           <source media="(min-width: 768px)" srcSet="/images/temple-backdrop.jpg" />
           <img
