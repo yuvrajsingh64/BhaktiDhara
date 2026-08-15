@@ -24,7 +24,14 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Only use smooth scroll on desktop — on mobile it can feel sluggish */
+  scroll-behavior: auto;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -33,6 +40,39 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent scroll-bounce from hiding the fixed player on mobile */
+  overscroll-behavior-y: none;
+}
+
+/* Smooth momentum scrolling for song lists on iOS */
+main, .bhakti-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Faster tap response on all interactive elements (removes 300ms mobile delay) */
+button, a, input[type="range"] {
+  touch-action: manipulation;
+}
+
+
+/* Promote fixed player to GPU layer — isolates it completely from scroll repaints */
+.bhakti-player-fixed {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+/* Song rows: contain layout+paint so hover states don’t repaint the whole page */
+.bhakti-song-row {
+  contain: layout style;
+  /* Disable hover transitions entirely on touch devices — they fire on tap, causing jank */
+  transition: none;
+}
+@media (hover: hover) {
+  .bhakti-song-row {
+    transition: background-color 0.15s;
+  }
 }
 
 ::selection {
@@ -78,10 +118,17 @@ body {
   color: rgba(245, 230, 211, 0.85);
   background: rgba(245, 230, 211, 0.08);
   border: 1px solid rgba(245, 230, 211, 0.1);
-  backdrop-filter: blur(8px);
+  /* Disable blur on mobile — expensive GPU op that causes scroll jank */
   transition: all 0.2s;
   text-decoration: none;
   cursor: pointer;
+}
+/* Only enable backdrop-filter on devices that can handle it smoothly */
+@media (hover: hover) and (min-width: 640px) {
+  .bhakti-chip {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 .bhakti-chip:hover {
   background: rgba(245, 230, 211, 0.15);
@@ -136,6 +183,9 @@ body {
   appearance: none;
   background: transparent;
   cursor: pointer;
+  /* Make the touch target taller so it's easier to grab on mobile */
+  min-height: 20px;
+  touch-action: none;
 }
 .bhakti-range::-webkit-slider-runnable-track {
   height: 4px;

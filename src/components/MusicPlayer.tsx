@@ -4,24 +4,13 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
 import { usePlayer } from '@/context/PlayerContext';
-import { getAllPlaylistSongs, bhaktiPlaylists } from '@/data/bhaktiPlaylists';
 
 export default function MusicPlayer() {
   const {
     currentSong, isPlaying, progress, currentTime, duration,
-    volume, playSong, pause, resume, nextSong, prevSong,
-    setVolume, seekTo, togglePlay, playPlaylist
+    volume, pause, resume, nextSong, prevSong,
+    setVolume, seekTo,
   } = usePlayer();
-
-  // Load first YouTube playlist on mount (paused by default so Play button ▶ shows)
-  useEffect(() => {
-    if (!currentSong) {
-      const firstPlaylist = bhaktiPlaylists[0];
-      if (firstPlaylist) {
-        playPlaylist(firstPlaylist.songs, 0, firstPlaylist.youtubePlaylistId, false);
-      }
-    }
-  }, []);
 
   const formatTime = (time: number) => {
     const m = Math.floor(time / 60);
@@ -41,13 +30,13 @@ export default function MusicPlayer() {
   }, [artwork]);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
+    <div className="bhakti-player-fixed pointer-events-none fixed inset-x-0 bottom-0 z-40">
       <div className="pointer-events-auto">
-        <div className="relative z-30 mx-auto mb-[max(1.25rem,env(safe-area-inset-bottom))] w-full max-w-xl px-3 sm:mb-10">
-          {/* Player pill */}
-          <div className="bhakti-glass mb-3 flex items-center gap-3 rounded-full p-2 pr-3 sm:gap-4 sm:p-3 sm:pr-5">
+        <div className="relative z-30 mx-auto mb-[max(0.75rem,env(safe-area-inset-bottom))] w-full max-w-xl px-3 sm:mb-10">
+          {/* Player pill — 100% solid & non-transparent */}
+          <div className="mb-2 flex items-center gap-2 rounded-2xl bg-[#1a1412] opacity-100 border border-cream/20 shadow-[0_16px_50px_rgba(0,0,0,0.95)] p-2 pr-3 sm:gap-4 sm:rounded-full sm:p-3 sm:pr-5">
             {/* Album art */}
-            <div className="relative size-12 shrink-0 rounded-full overflow-hidden sm:size-14 bg-saffron/20 border border-cream/10">
+            <div className="relative size-12 shrink-0 rounded-xl overflow-hidden sm:size-14 sm:rounded-full bg-saffron/20 border border-cream/10">
               <Image
                 src={imgSrc || '/images/krishna.jpg'}
                 alt={songTitle}
@@ -60,8 +49,8 @@ export default function MusicPlayer() {
 
             {/* Song info + seek */}
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-cream sm:text-base">{songTitle}</p>
-              <p className="truncate text-xs text-cream/60">{songArtist}</p>
+              <p className="truncate text-xs font-semibold text-cream sm:text-sm leading-tight">{songTitle}</p>
+              <p className="truncate text-[0.65rem] text-cream/60 mt-0.5">{songArtist}</p>
               <div className="mt-2 flex items-center gap-2">
                 <input
                   type="range"
@@ -74,46 +63,36 @@ export default function MusicPlayer() {
                   className="bhakti-range h-1 w-full"
                   style={{ '--progress': `${progressPercent}%` } as React.CSSProperties}
                 />
-                <span className="shrink-0 font-mono text-[0.6rem] text-cream/60 tabular-nums">
+                <span className="shrink-0 font-mono text-[0.6rem] text-cream/60 tabular-nums hidden sm:inline">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
               </div>
             </div>
 
             {/* Transport controls */}
-            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-              <button type="button" aria-label="Previous track" className="bhakti-icon-btn" onClick={prevSong}>
+            <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
+              <button type="button" aria-label="Previous track" className="bhakti-icon-btn !p-2.5" onClick={prevSong}>
                 <SkipBack className="size-4" />
               </button>
               <button
                 type="button"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
-                className="bhakti-play-btn"
+                className="bhakti-play-btn !w-10 !h-10 sm:!w-11 sm:!h-11"
                 onClick={() => isPlaying ? pause() : resume()}
               >
-                {isPlaying ? <Pause className="size-5" /> : <Play className="size-5 ml-0.5" />}
+                {isPlaying ? <Pause className="size-4 sm:size-5" /> : <Play className="size-4 sm:size-5 ml-0.5" />}
               </button>
-              <button type="button" aria-label="Next track" className="bhakti-icon-btn" onClick={nextSong}>
+              <button type="button" aria-label="Next track" className="bhakti-icon-btn !p-2.5" onClick={nextSong}>
                 <SkipForward className="size-4" />
               </button>
             </div>
 
-            {/* Volume */}
-            <div className="relative flex shrink-0 items-center gap-1 sm:gap-1.5">
-              {/* Mobile: just the icon */}
+            {/* Volume (desktop only) */}
+            <div className="relative hidden sm:flex shrink-0 items-center gap-1.5">
               <button
                 type="button"
                 aria-label={volume === 0 ? 'Unmute' : 'Mute'}
-                className="bhakti-icon-btn sm:hidden"
-                onClick={() => setVolume(volume === 0 ? 0.8 : 0)}
-              >
-                {volume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-              </button>
-              {/* Desktop: icon + slider */}
-              <button
-                type="button"
-                aria-label={volume === 0 ? 'Unmute' : 'Mute'}
-                className="bhakti-icon-btn hidden sm:inline-flex"
+                className="bhakti-icon-btn"
                 onClick={() => setVolume(volume === 0 ? 0.8 : 0)}
               >
                 {volume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
@@ -126,14 +105,14 @@ export default function MusicPlayer() {
                 value={volume * 100}
                 onChange={(e) => setVolume(Number(e.target.value) / 100)}
                 aria-label="Volume"
-                className="bhakti-range hidden h-1 w-16 sm:block"
+                className="bhakti-range h-1 w-16"
                 style={{ '--progress': `${volume * 100}%` } as React.CSSProperties}
               />
             </div>
           </div>
 
-          {/* Contact link */}
-          <p className="block text-center text-[0.65rem] text-cream/50 transition-colors sm:text-xs">
+          {/* Tagline */}
+          <p className="block text-center text-[0.6rem] text-cream/40 sm:text-xs sm:text-cream/50">
             भक्तिधारा · Where every note becomes devotion
           </p>
         </div>

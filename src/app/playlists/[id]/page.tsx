@@ -33,8 +33,8 @@ export default function PlaylistPage({ params }: { params: Promise<{ id: string 
 
   return (
     <main className="relative w-full min-h-screen bg-shade">
-      {/* Top Nav */}
-      <header className="sticky top-0 z-30 bg-shade/80 backdrop-blur-sm border-b border-cream/10">
+      {/* Top Nav — solid bg on mobile (backdrop-blur causes scroll jank), blur only on desktop */}
+      <header className="sticky top-0 z-30 bg-shade border-b border-cream/10 sm:bg-shade/80 sm:backdrop-blur-sm">
         <div className="mx-auto max-w-3xl flex items-center gap-2 px-5 py-3 sm:px-8">
           <Link href="/" className="bhakti-chip">← Radio</Link>
           <Link href="/playlists" className="bhakti-chip">Playlists</Link>
@@ -89,7 +89,7 @@ export default function PlaylistPage({ params }: { params: Promise<{ id: string 
             <button
               key={song.id}
               onClick={() => handlePlaySong(index)}
-              className={`w-full flex items-center gap-4 py-4 px-2 border-t border-cream/5 text-left transition-colors hover:bg-cream/5 group ${isActive ? 'bg-cream/5' : ''}`}
+              className={`bhakti-song-row w-full flex items-center gap-4 py-4 px-2 border-t border-cream/5 text-left group ${isActive ? 'bg-cream/5' : ''}`}
             >
               {/* Number */}
               <span className={`w-8 text-right font-mono text-sm tabular-nums shrink-0 ${isActive && isPlaying ? 'text-saffron' : 'text-sand/40'}`}>

@@ -10,6 +10,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { Song } from '@/data/songs';
+import { bhaktiPlaylists } from '@/data/bhaktiPlaylists';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -281,6 +282,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const ytPlaylistIdRef = useRef<string | null>(null);
   const queueRef = useRef<Song[]>([]);
   const currentSongRef = useRef<Song | null>(null);
+  // Tracks playlist load generation to discard stale YT events after switching playlists
+  const playlistGenRef = useRef<number>(0);
+  // The event generation that the current PLAYING listener should trust
+  const expectedGenRef = useRef<number>(0);
+  // The index we actually requested when calling loadPlaylist
+  const pendingStartIndexRef = useRef<number>(0);
+  // Whether we are waiting for the first PLAYING event after a new loadPlaylist call
+  const awaitingFirstPlayRef = useRef<boolean>(false);
 
   // Keep refs in sync
   useEffect(() => { queueRef.current = state.queue; }, [state.queue]);
@@ -365,29 +374,42 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
     // YT.PlayerState: UNSTARTED=-1, ENDED=0, PLAYING=1, PAUSED=2, BUFFERING=3, CUED=5
     switch (event.data) {
-      case 1: // PLAYING
+      case 1: { // PLAYING
         dispatch({ type: 'SET_IS_PLAYING', payload: true });
-        // Sync which song YouTube is actually playing — get REAL title from YouTube
+
         try {
-          const ytIdx = event.target.getPlaylistIndex();
-          const videoData = event.target.getVideoData();
           const queue = queueRef.current;
-          if (ytIdx >= 0 && ytIdx < queue.length) {
-            dispatch({ type: 'JUMP_TO_INDEX', payload: ytIdx });
+          let resolvedIdx: number;
+
+          if (awaitingFirstPlayRef.current && expectedGenRef.current === playlistGenRef.current) {
+            // First PLAYING event after a new loadPlaylist — trust our requested index, not YouTube's
+            resolvedIdx = pendingStartIndexRef.current;
+            awaitingFirstPlayRef.current = false;
+          } else {
+            // Normal play/next/prev — trust YouTube's reported index
+            const ytIdx = event.target.getPlaylistIndex();
+            resolvedIdx = ytIdx;
           }
+
+          if (resolvedIdx >= 0 && resolvedIdx < queue.length) {
+            dispatch({ type: 'JUMP_TO_INDEX', payload: resolvedIdx });
+          }
+
           // Update with real YouTube video title & artist
+          const videoData = event.target.getVideoData();
           if (videoData?.title) {
             dispatch({
               type: 'UPDATE_YT_SONG',
               payload: {
                 title: videoData.title,
                 artist: videoData.author || 'YouTube Music',
-                index: ytIdx,
+                index: resolvedIdx,
               },
             });
           }
         } catch { /* ignore */ }
         break;
+      }
       case 2: // PAUSED
         dispatch({ type: 'SET_IS_PLAYING', payload: false });
         break;
@@ -416,6 +438,21 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
     return () => clearInterval(syncInterval);
   }, [state.isPlaying, state.currentSong?.id]);
+
+  // ── One-time initialisation: cue first playlist on app mount (paused — shows ► Play button) ──
+  const didInitRef = useRef(false);
+  useEffect(() => {
+    if (didInitRef.current) return;
+    didInitRef.current = true;
+    const first = bhaktiPlaylists[0];
+    if (first) {
+      // Use a small delay so the YT API has time to set up
+      setTimeout(() => {
+        playPlaylist(first.songs, 0, first.youtubePlaylistId, false);
+      }, 300);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── LocalStorage: volume & liked songs ──
   useEffect(() => {
@@ -713,6 +750,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string, autoPlay: boolean = true) => {
+    // Synchronously update refs so handleYtStateChange sees the new queue immediately
     queueRef.current = songs;
     currentSongRef.current = songs[startIndex] || null;
 
@@ -722,35 +760,51 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       isYtMode.current = true;
       ytPlaylistIdRef.current = youtubePlaylistId;
 
+      // Bump generation counter so stale PLAYING events from the old playlist are ignored
+      const thisGen = playlistGenRef.current + 1;
+      playlistGenRef.current = thisGen;
+      expectedGenRef.current = thisGen;
+      pendingStartIndexRef.current = startIndex;
+      awaitingFirstPlayRef.current = true;
+
       const tryLoad = () => {
         const yt = ytPlayerRef.current;
         if (yt?.loadPlaylist || yt?.cuePlaylist) {
           try {
-            if (autoPlay) {
-              yt.loadPlaylist({
-                list: youtubePlaylistId,
-                listType: 'playlist',
-                index: startIndex,
-              });
-              if (typeof startIndex === 'number' && startIndex > 0 && yt.playVideoAt) {
-                setTimeout(() => {
-                  try { yt.playVideoAt(startIndex); } catch { /* ignore */ }
-                }, 150);
-              }
-            } else {
-              if (yt.cuePlaylist) {
-                yt.cuePlaylist({
-                  list: youtubePlaylistId,
-                  listType: 'playlist',
+            const videoIds = songs.map((s) => s.id).filter((id) => id && id !== '#');
+            if (videoIds.length > 0) {
+              if (autoPlay) {
+                yt.loadPlaylist({
+                  playlist: videoIds,
                   index: startIndex,
                 });
               } else {
+                if (yt.cuePlaylist) {
+                  yt.cuePlaylist({
+                    playlist: videoIds,
+                    index: startIndex,
+                  });
+                } else {
+                  yt.loadPlaylist({
+                    playlist: videoIds,
+                    index: startIndex,
+                  });
+                  yt.pauseVideo?.();
+                }
+              }
+            } else if (youtubePlaylistId) {
+              if (autoPlay) {
                 yt.loadPlaylist({
                   list: youtubePlaylistId,
                   listType: 'playlist',
                   index: startIndex,
                 });
-                yt.pauseVideo?.();
+              } else {
+                yt.cuePlaylist?.({
+                  list: youtubePlaylistId,
+                  listType: 'playlist',
+                  index: startIndex,
+                });
               }
             }
             // Set volume to match our state
