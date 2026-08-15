@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
 import { usePlayer } from '@/context/PlayerContext';
-import { getAllPlaylistSongs } from '@/data/bhaktiPlaylists';
+import { getAllPlaylistSongs, bhaktiPlaylists } from '@/data/bhaktiPlaylists';
 
 export default function MusicPlayer() {
   const {
@@ -13,12 +13,12 @@ export default function MusicPlayer() {
     setVolume, seekTo, togglePlay, playPlaylist
   } = usePlayer();
 
-  // Auto-play first song on mount if nothing is playing
+  // Auto-play first YouTube playlist on mount
   useEffect(() => {
     if (!currentSong) {
-      const allSongs = getAllPlaylistSongs();
-      if (allSongs.length > 0) {
-        playPlaylist(allSongs, 0);
+      const firstPlaylist = bhaktiPlaylists[0];
+      if (firstPlaylist) {
+        playPlaylist(firstPlaylist.songs, 0, firstPlaylist.youtubePlaylistId);
       }
     }
   }, []);

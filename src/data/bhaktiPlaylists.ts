@@ -9,6 +9,7 @@ export interface BhaktiPlaylist {
   songs: Song[];
   source: 'youtube-music' | 'spotify';
   sourceUrl: string;
+  youtubePlaylistId?: string;
 }
 
 const hindiBhaktiSongs: Song[] = [
@@ -67,6 +68,7 @@ export const bhaktiPlaylists: BhaktiPlaylist[] = [
     songs: hindiBhaktiSongs,
     source: 'youtube-music',
     sourceUrl: 'https://music.youtube.com/playlist?list=PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9',
+    youtubePlaylistId: 'PL9bw4S5ePsEE0jGfUgUMvzeWAaMPcqHL9',
   },
   {
     id: 'mahadev',
@@ -87,6 +89,7 @@ export const bhaktiPlaylists: BhaktiPlaylist[] = [
     songs: bhojpuriBhaktiSongs,
     source: 'youtube-music',
     sourceUrl: 'https://music.youtube.com/playlist?list=PLFb_QU8-9a10b_FjHUDBc64HzBlZjaYCs',
+    youtubePlaylistId: 'PLFb_QU8-9a10b_FjHUDBc64HzBlZjaYCs',
   },
 ];
 

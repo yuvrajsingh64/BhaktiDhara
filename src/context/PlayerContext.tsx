@@ -11,16 +11,18 @@ import React, {
 } from 'react';
 import { Song } from '@/data/songs';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type RepeatMode = 'off' | 'all' | 'one';
 
 export interface PlayerState {
   currentSong: Song | null;
   queue: Song[];
   isPlaying: boolean;
-  volume: number; // 0 to 1
-  progress: number; // 0 to 100
-  currentTime: number; // in seconds
-  duration: number; // in seconds
+  volume: number;
+  progress: number;
+  currentTime: number;
+  duration: number;
   isLiked: boolean;
   isShuffled: boolean;
   repeatMode: RepeatMode;
@@ -44,24 +46,16 @@ export type PlayerAction =
   | { type: 'SET_QUEUE'; payload: Song[] }
   | { type: 'PLAY_PLAYLIST'; payload: { songs: Song[]; startIndex?: number } }
   | { type: 'SET_IS_PLAYING'; payload: boolean }
-  | { type: 'SET_LIKED_IDS'; payload: string[] };
+  | { type: 'SET_LIKED_IDS'; payload: string[] }
+  | { type: 'JUMP_TO_INDEX'; payload: number };
 
 function parseSongDuration(song?: Song | null): number {
   if (!song) return 0;
-  if ('durationSeconds' in song && typeof song.durationSeconds === 'number') {
-    return song.durationSeconds;
-  }
-  if (typeof song.duration === 'number') {
-    return song.duration;
-  }
+  if (typeof song.durationSeconds === 'number') return song.durationSeconds;
   if (typeof song.duration === 'string') {
     const parts = song.duration.split(':').map((v) => Number(v.trim()));
-    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      return parts[0] * 60 + parts[1];
-    }
-    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
-      return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    }
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return parts[0] * 60 + parts[1];
+    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) return parts[0] * 3600 + parts[1] * 60 + parts[2];
   }
   return 0;
 }
@@ -86,9 +80,6 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
       const song = action.payload;
       const queueExists = state.queue.some((s) => s.id === song.id);
       const newQueue = queueExists ? state.queue : [...state.queue, song];
-      const isLiked = state.likedSongIds.includes(song.id) || !!song.isLiked;
-      const songDuration = parseSongDuration(song) || state.duration;
-
       return {
         ...state,
         currentSong: song,
@@ -96,232 +87,134 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
         isPlaying: true,
         progress: 0,
         currentTime: 0,
-        duration: songDuration,
-        isLiked,
+        duration: parseSongDuration(song) || state.duration,
+        isLiked: state.likedSongIds.includes(song.id) || !!song.isLiked,
       };
     }
 
     case 'PAUSE':
-      return {
-        ...state,
-        isPlaying: false,
-      };
+      return { ...state, isPlaying: false };
 
     case 'RESUME':
       if (!state.currentSong && state.queue.length > 0) {
         const firstSong = state.queue[0];
         return {
-          ...state,
-          currentSong: firstSong,
-          isPlaying: true,
+          ...state, currentSong: firstSong, isPlaying: true,
           duration: parseSongDuration(firstSong),
           isLiked: state.likedSongIds.includes(firstSong.id) || !!firstSong.isLiked,
         };
       }
-      return {
-        ...state,
-        isPlaying: state.currentSong !== null,
-      };
+      return { ...state, isPlaying: state.currentSong !== null };
 
     case 'SET_IS_PLAYING':
-      return {
-        ...state,
-        isPlaying: action.payload,
-      };
+      return { ...state, isPlaying: action.payload };
 
     case 'NEXT_SONG': {
       if (state.queue.length === 0) return state;
-
-      let nextIndex = 0;
+      const currentIndex = state.queue.findIndex((s) => s.id === state.currentSong?.id);
+      let nextIndex: number;
       if (state.isShuffled && state.queue.length > 1) {
-        const currentIndex = state.queue.findIndex(
-          (s) => s.id === state.currentSong?.id
-        );
-        do {
-          nextIndex = Math.floor(Math.random() * state.queue.length);
-        } while (nextIndex === currentIndex && state.queue.length > 1);
+        do { nextIndex = Math.floor(Math.random() * state.queue.length); } while (nextIndex === currentIndex);
+      } else if (currentIndex < state.queue.length - 1) {
+        nextIndex = currentIndex + 1;
+      } else if (state.repeatMode === 'all') {
+        nextIndex = 0;
       } else {
-        const currentIndex = state.queue.findIndex(
-          (s) => s.id === state.currentSong?.id
-        );
-        if (currentIndex === -1) {
-          nextIndex = 0;
-        } else if (currentIndex < state.queue.length - 1) {
-          nextIndex = currentIndex + 1;
-        } else {
-          // At end of queue
-          if (state.repeatMode === 'all') {
-            nextIndex = 0;
-          } else {
-            // Repeat is off, stop playing
-            return {
-              ...state,
-              isPlaying: false,
-              progress: 0,
-              currentTime: 0,
-            };
-          }
-        }
+        return { ...state, isPlaying: false, progress: 0, currentTime: 0 };
       }
-
       const nextSong = state.queue[nextIndex];
       return {
-        ...state,
-        currentSong: nextSong,
-        isPlaying: true,
-        progress: 0,
-        currentTime: 0,
+        ...state, currentSong: nextSong, isPlaying: true, progress: 0, currentTime: 0,
         duration: parseSongDuration(nextSong),
-        isLiked: nextSong
-          ? state.likedSongIds.includes(nextSong.id) || !!nextSong.isLiked
-          : false,
+        isLiked: nextSong ? state.likedSongIds.includes(nextSong.id) || !!nextSong.isLiked : false,
       };
     }
 
     case 'PREV_SONG': {
       if (state.queue.length === 0) return state;
-
-      const currentIndex = state.queue.findIndex(
-        (s) => s.id === state.currentSong?.id
-      );
-      let prevIndex = 0;
-
-      if (currentIndex > 0) {
-        prevIndex = currentIndex - 1;
-      } else if (currentIndex === 0 && state.repeatMode === 'all') {
-        prevIndex = state.queue.length - 1;
-      } else {
-        prevIndex = 0;
-      }
-
+      const currentIndex = state.queue.findIndex((s) => s.id === state.currentSong?.id);
+      let prevIndex = currentIndex > 0 ? currentIndex - 1 : (state.repeatMode === 'all' ? state.queue.length - 1 : 0);
       const prevSong = state.queue[prevIndex];
       return {
-        ...state,
-        currentSong: prevSong,
-        isPlaying: true,
-        progress: 0,
-        currentTime: 0,
+        ...state, currentSong: prevSong, isPlaying: true, progress: 0, currentTime: 0,
         duration: parseSongDuration(prevSong),
-        isLiked: prevSong
-          ? state.likedSongIds.includes(prevSong.id) || !!prevSong.isLiked
-          : false,
+        isLiked: prevSong ? state.likedSongIds.includes(prevSong.id) || !!prevSong.isLiked : false,
       };
     }
 
-    case 'SET_VOLUME': {
-      const clamped = Math.max(0, Math.min(1, action.payload));
-      return {
-        ...state,
-        volume: clamped,
-      };
-    }
-
+    case 'SET_VOLUME':
+      return { ...state, volume: Math.max(0, Math.min(1, action.payload)) };
     case 'SET_PROGRESS':
-      return {
-        ...state,
-        progress: Math.max(0, Math.min(100, action.payload)),
-      };
-
+      return { ...state, progress: Math.max(0, Math.min(100, action.payload)) };
     case 'SET_CURRENT_TIME':
-      return {
-        ...state,
-        currentTime: action.payload,
-      };
-
+      return { ...state, currentTime: action.payload };
     case 'SET_DURATION':
-      return {
-        ...state,
-        duration: action.payload,
-      };
+      return { ...state, duration: action.payload };
 
     case 'TOGGLE_LIKE': {
       const targetId = action.payload || state.currentSong?.id;
       if (!targetId) return state;
-
       const isCurrentlyLiked = state.likedSongIds.includes(targetId);
-      const updatedLikes = isCurrentlyLiked
-        ? state.likedSongIds.filter((id) => id !== targetId)
-        : [...state.likedSongIds, targetId];
-
-      const currentLiked = state.currentSong?.id === targetId
-        ? !isCurrentlyLiked
-        : state.currentSong
-        ? updatedLikes.includes(state.currentSong.id)
-        : false;
-
+      const updatedLikes = isCurrentlyLiked ? state.likedSongIds.filter((id) => id !== targetId) : [...state.likedSongIds, targetId];
       return {
-        ...state,
-        likedSongIds: updatedLikes,
-        isLiked: currentLiked,
+        ...state, likedSongIds: updatedLikes,
+        isLiked: state.currentSong?.id === targetId ? !isCurrentlyLiked : (state.currentSong ? updatedLikes.includes(state.currentSong.id) : false),
       };
     }
 
     case 'TOGGLE_SHUFFLE':
-      return {
-        ...state,
-        isShuffled: !state.isShuffled,
-      };
+      return { ...state, isShuffled: !state.isShuffled };
 
     case 'TOGGLE_REPEAT': {
-      const nextMode: Record<RepeatMode, RepeatMode> = {
-        off: 'all',
-        all: 'one',
-        one: 'off',
-      };
-      return {
-        ...state,
-        repeatMode: nextMode[state.repeatMode],
-      };
+      const nextMode: Record<RepeatMode, RepeatMode> = { off: 'all', all: 'one', one: 'off' };
+      return { ...state, repeatMode: nextMode[state.repeatMode] };
     }
 
     case 'ADD_TO_QUEUE': {
-      const exists = state.queue.some((s) => s.id === action.payload.id);
-      if (exists) return state;
-      return {
-        ...state,
-        queue: [...state.queue, action.payload],
-      };
+      if (state.queue.some((s) => s.id === action.payload.id)) return state;
+      return { ...state, queue: [...state.queue, action.payload] };
     }
 
     case 'SET_QUEUE':
-      return {
-        ...state,
-        queue: action.payload,
-      };
+      return { ...state, queue: action.payload };
 
     case 'PLAY_PLAYLIST': {
       const { songs, startIndex = 0 } = action.payload;
       if (!songs || songs.length === 0) return state;
-      const chosenIndex = Math.max(0, Math.min(songs.length - 1, startIndex));
-      const songToPlay = songs[chosenIndex];
-      const isLiked =
-        state.likedSongIds.includes(songToPlay.id) || !!songToPlay.isLiked;
-
+      const idx = Math.max(0, Math.min(songs.length - 1, startIndex));
+      const songToPlay = songs[idx];
       return {
-        ...state,
-        queue: songs,
-        currentSong: songToPlay,
-        isPlaying: true,
-        progress: 0,
-        currentTime: 0,
-        duration: parseSongDuration(songToPlay),
-        isLiked,
+        ...state, queue: songs, currentSong: songToPlay, isPlaying: true,
+        progress: 0, currentTime: 0, duration: parseSongDuration(songToPlay),
+        isLiked: state.likedSongIds.includes(songToPlay.id) || !!songToPlay.isLiked,
+      };
+    }
+
+    case 'JUMP_TO_INDEX': {
+      const idx = action.payload;
+      if (idx < 0 || idx >= state.queue.length) return state;
+      const song = state.queue[idx];
+      return {
+        ...state, currentSong: song, isPlaying: true, progress: 0, currentTime: 0,
+        duration: parseSongDuration(song),
+        isLiked: state.likedSongIds.includes(song.id) || !!song.isLiked,
       };
     }
 
     case 'SET_LIKED_IDS':
       return {
-        ...state,
-        likedSongIds: action.payload,
-        isLiked: state.currentSong
-          ? action.payload.includes(state.currentSong.id)
-          : false,
+        ...state, likedSongIds: action.payload,
+        isLiked: state.currentSong ? action.payload.includes(state.currentSong.id) : false,
       };
 
     default:
       return state;
   }
 }
+
+// ────────────────────────────────────────────────────────────────
+// Context type
+// ────────────────────────────────────────────────────────────────
 
 export interface PlayerContextType extends PlayerState {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -342,218 +235,285 @@ export interface PlayerContextType extends PlayerState {
   toggleRepeat: () => void;
   addToQueue: (song: Song) => void;
   setQueue: (songs: Song[]) => void;
-  playPlaylist: (songs: Song[], startIndex?: number) => void;
+  playPlaylist: (songs: Song[], startIndex?: number, youtubePlaylistId?: string) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
+
+// ────────────────────────────────────────────────────────────────
+// Provider
+// ────────────────────────────────────────────────────────────────
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(playerReducer, initialState);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isSeekingRef = useRef<boolean>(false);
 
-  // Initialize saved volume and liked songs from localStorage on mount
-  useEffect(() => {
-    try {
-      const savedVolume = localStorage.getItem('bhaktidhara_volume');
-      if (savedVolume !== null) {
-        const vol = parseFloat(savedVolume);
-        if (!isNaN(vol)) {
-          dispatch({ type: 'SET_VOLUME', payload: vol });
-        }
-      }
+  // ── Simulation refs ──
+  const simTimeRef = useRef<number>(0);
 
-      const savedLikes = localStorage.getItem('bhaktidhara_liked_songs');
-      if (savedLikes) {
-        const parsed = JSON.parse(savedLikes);
-        if (Array.isArray(parsed)) {
-          dispatch({ type: 'SET_LIKED_IDS', payload: parsed });
-        }
+  // ── YouTube refs ──
+  const ytPlayerRef = useRef<any>(null);
+  const ytApiReady = useRef(false);
+  const isYtMode = useRef(false);
+  const ytPlaylistIdRef = useRef<string | null>(null);
+  const queueRef = useRef<Song[]>([]);
+
+  // Keep queueRef in sync
+  useEffect(() => { queueRef.current = state.queue; }, [state.queue]);
+  useEffect(() => { simTimeRef.current = state.currentTime; }, [state.currentTime]);
+
+  // ── Load YouTube IFrame API ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const initPlayer = () => {
+      ytApiReady.current = true;
+      if (!ytPlayerRef.current && document.getElementById('bhakti-yt-player')) {
+        ytPlayerRef.current = new (window as any).YT.Player('bhakti-yt-player', {
+          height: '1',
+          width: '1',
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            rel: 0,
+            modestbranding: 1,
+            origin: window.location.origin,
+          },
+          events: {
+            onStateChange: handleYtStateChange,
+            onError: (e: any) => console.warn('YT Player error:', e.data),
+          },
+        });
       }
-    } catch {
-      // Ignore localStorage errors (e.g. in incognito or SSR)
+    };
+
+    if ((window as any).YT?.Player) {
+      initPlayer();
+    } else {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.async = true;
+      const first = document.getElementsByTagName('script')[0];
+      first?.parentNode?.insertBefore(tag, first);
+
+      (window as any).onYouTubeIframeAPIReady = initPlayer;
     }
   }, []);
 
-  // Sync liked songs to localStorage
+  // ── YouTube state change handler ──
+  function handleYtStateChange(event: any) {
+    if (!isYtMode.current) return;
+
+    // YT.PlayerState: UNSTARTED=-1, ENDED=0, PLAYING=1, PAUSED=2, BUFFERING=3, CUED=5
+    switch (event.data) {
+      case 1: // PLAYING
+        dispatch({ type: 'SET_IS_PLAYING', payload: true });
+        // Sync which song YouTube is actually playing
+        try {
+          const ytIdx = event.target.getPlaylistIndex();
+          const queue = queueRef.current;
+          if (ytIdx >= 0 && ytIdx < queue.length) {
+            dispatch({ type: 'JUMP_TO_INDEX', payload: ytIdx });
+          }
+        } catch { /* ignore */ }
+        break;
+      case 2: // PAUSED
+        dispatch({ type: 'SET_IS_PLAYING', payload: false });
+        break;
+      case 0: // ENDED (single video ended; YT auto-advances in playlist)
+        break;
+    }
+  }
+
+  // ── YouTube time sync ──
+  useEffect(() => {
+    if (!state.isPlaying || !isYtMode.current) return;
+
+    const syncInterval = setInterval(() => {
+      try {
+        const yt = ytPlayerRef.current;
+        if (!yt?.getCurrentTime || !yt?.getDuration) return;
+        const ct = yt.getCurrentTime();
+        const dur = yt.getDuration();
+        if (dur > 0) {
+          dispatch({ type: 'SET_CURRENT_TIME', payload: ct });
+          dispatch({ type: 'SET_DURATION', payload: dur });
+          dispatch({ type: 'SET_PROGRESS', payload: (ct / dur) * 100 });
+        }
+      } catch { /* player not ready */ }
+    }, 500);
+
+    return () => clearInterval(syncInterval);
+  }, [state.isPlaying, state.currentSong?.id]);
+
+  // ── LocalStorage: volume & liked songs ──
   useEffect(() => {
     try {
-      localStorage.setItem(
-        'bhaktidhara_liked_songs',
-        JSON.stringify(state.likedSongIds)
-      );
-    } catch {
-      // Ignore
-    }
+      const sv = localStorage.getItem('bhaktidhara_volume');
+      if (sv !== null) { const v = parseFloat(sv); if (!isNaN(v)) dispatch({ type: 'SET_VOLUME', payload: v }); }
+      const sl = localStorage.getItem('bhaktidhara_liked_songs');
+      if (sl) { const p = JSON.parse(sl); if (Array.isArray(p)) dispatch({ type: 'SET_LIKED_IDS', payload: p }); }
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem('bhaktidhara_liked_songs', JSON.stringify(state.likedSongIds)); } catch { /* ignore */ }
   }, [state.likedSongIds]);
 
-  // Sync volume to localStorage and audio element
   useEffect(() => {
-    try {
-      localStorage.setItem('bhaktidhara_volume', state.volume.toString());
-    } catch {
-      // Ignore
-    }
-    if (audioRef.current) {
-      audioRef.current.volume = state.volume;
+    try { localStorage.setItem('bhaktidhara_volume', state.volume.toString()); } catch { /* ignore */ }
+    if (audioRef.current) audioRef.current.volume = state.volume;
+    // Sync YT volume
+    if (isYtMode.current && ytPlayerRef.current?.setVolume) {
+      try { ytPlayerRef.current.setVolume(state.volume * 100); } catch { /* ignore */ }
     }
   }, [state.volume]);
 
-  // Handle current song audio source change
+  // ── Audio element: source management (NON-YT mode only) ──
   useEffect(() => {
+    if (isYtMode.current) return; // YouTube handles audio
     const audio = audioRef.current;
     if (!audio) return;
-
     if (state.currentSong?.audioUrl && state.currentSong.audioUrl !== '#') {
-      if (audio.src !== state.currentSong.audioUrl) {
-        audio.src = state.currentSong.audioUrl;
-        audio.load();
-      }
-
-      if (state.isPlaying) {
-        audio.play().catch((err) => {
-          console.warn('Autoplay prevented or audio load error:', err);
-        });
-      }
-    } else if (state.currentSong?.audioUrl === '#') {
-      // For placeholder audio URLs, do not fail silently or trigger media error
-      audio.removeAttribute('src');
+      if (audio.src !== state.currentSong.audioUrl) { audio.src = state.currentSong.audioUrl; audio.load(); }
+      if (state.isPlaying) audio.play().catch(() => {});
     } else {
-      audio.pause();
       audio.removeAttribute('src');
     }
   }, [state.currentSong]);
 
-  // Handle play/pause state change
+  // ── Audio element: play/pause (NON-YT mode only) ──
   useEffect(() => {
+    if (isYtMode.current) return;
     const audio = audioRef.current;
     if (!audio || !state.currentSong) return;
-
-    if (state.isPlaying) {
-      if (state.currentSong.audioUrl && state.currentSong.audioUrl !== '#') {
-        audio.play().catch((err) => {
-          console.warn('Audio playback error:', err);
-        });
-      }
-    } else {
+    if (state.isPlaying && state.currentSong.audioUrl && state.currentSong.audioUrl !== '#') {
+      audio.play().catch(() => {});
+    } else if (!state.isPlaying) {
       audio.pause();
     }
   }, [state.isPlaying]);
 
-  // Simulated playback for placeholder audio URLs ('#')
-  const simTimeRef = useRef<number>(0);
-
+  // ── Simulated playback for placeholder audio (NON-YT mode only) ──
   useEffect(() => {
-    simTimeRef.current = state.currentTime;
-  }, [state.currentTime]);
-
-  useEffect(() => {
-    const isPlaceholder =
-      state.currentSong &&
-      (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
-
-    if (!isPlaceholder || !state.isPlaying) {
-      return;
-    }
+    if (isYtMode.current) return; // YouTube handles playback
+    const isPlaceholder = state.currentSong && (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
+    if (!isPlaceholder || !state.isPlaying) return;
 
     const dur = state.duration || parseSongDuration(state.currentSong) || 300;
-
     const simInterval = setInterval(() => {
       const newTime = simTimeRef.current + 1;
-      if (newTime >= dur) {
-        clearInterval(simInterval);
-        dispatch({ type: 'NEXT_SONG' });
-        return;
-      }
+      if (newTime >= dur) { clearInterval(simInterval); dispatch({ type: 'NEXT_SONG' }); return; }
       simTimeRef.current = newTime;
       dispatch({ type: 'SET_CURRENT_TIME', payload: newTime });
       dispatch({ type: 'SET_PROGRESS', payload: (newTime / dur) * 100 });
     }, 1000);
-
-    return () => {
-      clearInterval(simInterval);
-    };
+    return () => clearInterval(simInterval);
   }, [state.isPlaying, state.currentSong?.id, state.duration]);
 
-  // Audio event listeners
+  // ── Audio event handlers (NON-YT mode) ──
   const handleTimeUpdate = useCallback(() => {
+    if (isYtMode.current) return;
     const audio = audioRef.current;
     if (!audio || isSeekingRef.current) return;
-
     const current = audio.currentTime;
     const dur = audio.duration || state.duration || 0;
-    const progress = dur > 0 ? (current / dur) * 100 : 0;
-
     dispatch({ type: 'SET_CURRENT_TIME', payload: current });
-    dispatch({ type: 'SET_PROGRESS', payload: progress });
+    dispatch({ type: 'SET_PROGRESS', payload: dur > 0 ? (current / dur) * 100 : 0 });
   }, [state.duration]);
 
   const handleLoadedMetadata = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     const dur = audio.duration;
-    if (!isNaN(dur) && dur > 0) {
-      dispatch({ type: 'SET_DURATION', payload: dur });
-    }
+    if (!isNaN(dur) && dur > 0) dispatch({ type: 'SET_DURATION', payload: dur });
   }, []);
 
   const handleEnded = useCallback(() => {
+    if (isYtMode.current) return;
     if (state.repeatMode === 'one') {
       const audio = audioRef.current;
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch((err) => console.warn('Repeat audio error:', err));
-      }
+      if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
     } else {
       dispatch({ type: 'NEXT_SONG' });
     }
   }, [state.repeatMode]);
 
   const handlePlay = useCallback(() => {
-    // Ignore audio element events for placeholder songs — simulation handles state
+    if (isYtMode.current) return;
     const isPlaceholder = state.currentSong && (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
-    if (!isPlaceholder) {
-      dispatch({ type: 'SET_IS_PLAYING', payload: true });
-    }
+    if (!isPlaceholder) dispatch({ type: 'SET_IS_PLAYING', payload: true });
   }, [state.currentSong]);
 
   const handlePause = useCallback(() => {
-    // Ignore audio element events for placeholder songs — simulation handles state
+    if (isYtMode.current) return;
     const isPlaceholder = state.currentSong && (!state.currentSong.audioUrl || state.currentSong.audioUrl === '#');
-    if (!isPlaceholder) {
-      dispatch({ type: 'SET_IS_PLAYING', payload: false });
-    }
+    if (!isPlaceholder) dispatch({ type: 'SET_IS_PLAYING', payload: false });
   }, [state.currentSong]);
 
+  // ────────────────────────────────────────────────────────────
   // Action methods
+  // ────────────────────────────────────────────────────────────
+
   const playSong = useCallback((song: Song) => {
     dispatch({ type: 'PLAY_SONG', payload: song });
   }, []);
 
   const pause = useCallback(() => {
     dispatch({ type: 'PAUSE' });
+    if (isYtMode.current && ytPlayerRef.current?.pauseVideo) {
+      try { ytPlayerRef.current.pauseVideo(); } catch { /* ignore */ }
+    }
   }, []);
 
   const resume = useCallback(() => {
     dispatch({ type: 'RESUME' });
+    if (isYtMode.current && ytPlayerRef.current?.playVideo) {
+      try { ytPlayerRef.current.playVideo(); } catch { /* ignore */ }
+    }
   }, []);
 
   const togglePlay = useCallback(() => {
     if (state.isPlaying) {
       dispatch({ type: 'PAUSE' });
+      if (isYtMode.current && ytPlayerRef.current?.pauseVideo) {
+        try { ytPlayerRef.current.pauseVideo(); } catch { /* ignore */ }
+      }
     } else {
       dispatch({ type: 'RESUME' });
+      if (isYtMode.current && ytPlayerRef.current?.playVideo) {
+        try { ytPlayerRef.current.playVideo(); } catch { /* ignore */ }
+      }
     }
   }, [state.isPlaying]);
 
   const nextSong = useCallback(() => {
+    if (isYtMode.current && ytPlayerRef.current?.nextVideo) {
+      try { ytPlayerRef.current.nextVideo(); } catch { /* ignore */ }
+      // State update happens via onStateChange → JUMP_TO_INDEX
+      return;
+    }
     dispatch({ type: 'NEXT_SONG' });
   }, []);
 
   const prevSong = useCallback(() => {
+    if (isYtMode.current && ytPlayerRef.current) {
+      try {
+        const ct = ytPlayerRef.current.getCurrentTime?.() || 0;
+        if (ct > 3) {
+          ytPlayerRef.current.seekTo(0, true);
+          dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
+          dispatch({ type: 'SET_PROGRESS', payload: 0 });
+        } else {
+          ytPlayerRef.current.previousVideo();
+        }
+      } catch { /* ignore */ }
+      return;
+    }
     const audio = audioRef.current;
-    // If more than 3 seconds in, restart the song
     if (audio && audio.currentTime > 3) {
       audio.currentTime = 0;
       dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
@@ -577,14 +537,25 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   const seekTo = useCallback(
     (progressPercent: number) => {
-      const audio = audioRef.current;
       const clampedPercent = Math.max(0, Math.min(100, progressPercent));
+
+      // YouTube mode
+      if (isYtMode.current && ytPlayerRef.current?.seekTo && ytPlayerRef.current?.getDuration) {
+        try {
+          const dur = ytPlayerRef.current.getDuration();
+          const targetTime = (clampedPercent / 100) * dur;
+          ytPlayerRef.current.seekTo(targetTime, true);
+          dispatch({ type: 'SET_CURRENT_TIME', payload: targetTime });
+          dispatch({ type: 'SET_PROGRESS', payload: clampedPercent });
+        } catch { /* ignore */ }
+        return;
+      }
+
+      // Non-YT mode
+      const audio = audioRef.current;
       const dur = (audio && audio.duration) || state.duration || 0;
       const targetTime = (clampedPercent / 100) * dur;
-
-      // Sync simulation timer for placeholder songs
       simTimeRef.current = targetTime;
-
       if (audio && !isNaN(targetTime) && state.currentSong?.audioUrl !== '#') {
         audio.currentTime = targetTime;
       }
@@ -596,14 +567,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   const seekTime = useCallback(
     (seconds: number) => {
+      if (isYtMode.current && ytPlayerRef.current?.seekTo) {
+        try { ytPlayerRef.current.seekTo(seconds, true); } catch { /* ignore */ }
+        dispatch({ type: 'SET_CURRENT_TIME', payload: seconds });
+        return;
+      }
       const audio = audioRef.current;
       const dur = (audio && audio.duration) || state.duration || 0;
       const clampedTime = Math.max(0, Math.min(dur, seconds));
       const progress = dur > 0 ? (clampedTime / dur) * 100 : 0;
-
-      if (audio && !isNaN(clampedTime)) {
-        audio.currentTime = clampedTime;
-      }
+      if (audio && !isNaN(clampedTime)) audio.currentTime = clampedTime;
       dispatch({ type: 'SET_CURRENT_TIME', payload: clampedTime });
       dispatch({ type: 'SET_PROGRESS', payload: progress });
     },
@@ -615,15 +588,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const isSongLiked = useCallback(
-    (songId: string) => {
-      return state.likedSongIds.includes(songId);
-    },
+    (songId: string) => state.likedSongIds.includes(songId),
     [state.likedSongIds]
   );
 
   const toggleShuffle = useCallback(() => {
     dispatch({ type: 'TOGGLE_SHUFFLE' });
-  }, []);
+    if (isYtMode.current && ytPlayerRef.current?.setShuffle) {
+      try { ytPlayerRef.current.setShuffle(!state.isShuffled); } catch { /* ignore */ }
+    }
+  }, [state.isShuffled]);
 
   const toggleRepeat = useCallback(() => {
     dispatch({ type: 'TOGGLE_REPEAT' });
@@ -637,12 +611,50 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_QUEUE', payload: songs });
   }, []);
 
-  const playPlaylist = useCallback((songs: Song[], startIndex: number = 0) => {
-    dispatch({
-      type: 'PLAY_PLAYLIST',
-      payload: { songs, startIndex },
-    });
-  }, []);
+  const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string) => {
+    dispatch({ type: 'PLAY_PLAYLIST', payload: { songs, startIndex } });
+
+    if (youtubePlaylistId) {
+      isYtMode.current = true;
+      ytPlaylistIdRef.current = youtubePlaylistId;
+
+      const tryLoad = () => {
+        const yt = ytPlayerRef.current;
+        if (yt?.loadPlaylist) {
+          try {
+            yt.loadPlaylist({
+              list: youtubePlaylistId,
+              listType: 'playlist',
+              index: startIndex,
+            });
+            // Set volume to match our state
+            setTimeout(() => {
+              try { yt.setVolume(state.volume * 100); } catch { /* ignore */ }
+            }, 500);
+          } catch (e) {
+            console.warn('YT loadPlaylist error:', e);
+            isYtMode.current = false;
+          }
+        } else {
+          // API not ready yet, retry
+          setTimeout(tryLoad, 500);
+        }
+      };
+      tryLoad();
+    } else {
+      // Non-YouTube playlist (e.g. Spotify) → simulated playback
+      isYtMode.current = false;
+      ytPlaylistIdRef.current = null;
+      // Stop YouTube if it was playing
+      if (ytPlayerRef.current?.stopVideo) {
+        try { ytPlayerRef.current.stopVideo(); } catch { /* ignore */ }
+      }
+    }
+  }, [state.volume]);
+
+  // ────────────────────────────────────────────────────────────
+  // Context value
+  // ────────────────────────────────────────────────────────────
 
   const value: PlayerContextType = {
     ...state,
@@ -679,6 +691,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         onPlay={handlePlay}
         onPause={handlePause}
         preload="metadata"
+      />
+      {/* Hidden YouTube player — must exist in DOM for IFrame API */}
+      <div
+        id="bhakti-yt-player"
+        style={{ position: 'fixed', top: -9999, left: -9999, width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
       />
     </PlayerContext.Provider>
   );

@@ -16,11 +16,11 @@ export default function PlaylistPage({ params }: { params: Promise<{ id: string 
   }
 
   const handlePlaySong = (index: number) => {
-    playPlaylist(playlist.songs, index);
+    playPlaylist(playlist.songs, index, playlist.youtubePlaylistId);
   };
 
   const handlePlayAll = () => {
-    playPlaylist(playlist.songs, 0);
+    playPlaylist(playlist.songs, 0, playlist.youtubePlaylistId);
   };
 
   // Calculate total duration
