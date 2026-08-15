@@ -44,7 +44,7 @@ export type PlayerAction =
   | { type: 'TOGGLE_REPEAT' }
   | { type: 'ADD_TO_QUEUE'; payload: Song }
   | { type: 'SET_QUEUE'; payload: Song[] }
-  | { type: 'PLAY_PLAYLIST'; payload: { songs: Song[]; startIndex?: number } }
+  | { type: 'PLAY_PLAYLIST'; payload: { songs: Song[]; startIndex?: number; autoPlay?: boolean } }
   | { type: 'SET_IS_PLAYING'; payload: boolean }
   | { type: 'SET_LIKED_IDS'; payload: string[] }
   | { type: 'JUMP_TO_INDEX'; payload: number }
@@ -180,12 +180,12 @@ function playerReducer(state: PlayerState, action: PlayerAction): PlayerState {
       return { ...state, queue: action.payload };
 
     case 'PLAY_PLAYLIST': {
-      const { songs, startIndex = 0 } = action.payload;
+      const { songs, startIndex = 0, autoPlay = true } = action.payload;
       if (!songs || songs.length === 0) return state;
       const idx = Math.max(0, Math.min(songs.length - 1, startIndex));
       const songToPlay = songs[idx];
       return {
-        ...state, queue: songs, currentSong: songToPlay, isPlaying: true,
+        ...state, queue: songs, currentSong: songToPlay, isPlaying: autoPlay,
         progress: 0, currentTime: 0, duration: parseSongDuration(songToPlay),
         isLiked: state.likedSongIds.includes(songToPlay.id) || !!songToPlay.isLiked,
       };
@@ -257,7 +257,7 @@ export interface PlayerContextType extends PlayerState {
   toggleRepeat: () => void;
   addToQueue: (song: Song) => void;
   setQueue: (songs: Song[]) => void;
-  playPlaylist: (songs: Song[], startIndex?: number, youtubePlaylistId?: string) => void;
+  playPlaylist: (songs: Song[], startIndex?: number, youtubePlaylistId?: string, autoPlay?: boolean) => void;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
@@ -712,8 +712,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_QUEUE', payload: songs });
   }, []);
 
-  const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string) => {
-    dispatch({ type: 'PLAY_PLAYLIST', payload: { songs, startIndex } });
+  const playPlaylist = useCallback((songs: Song[], startIndex: number = 0, youtubePlaylistId?: string, autoPlay: boolean = true) => {
+    dispatch({ type: 'PLAY_PLAYLIST', payload: { songs, startIndex, autoPlay } });
 
     if (youtubePlaylistId) {
       isYtMode.current = true;
@@ -721,13 +721,30 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
       const tryLoad = () => {
         const yt = ytPlayerRef.current;
-        if (yt?.loadPlaylist) {
+        if (yt?.loadPlaylist || yt?.cuePlaylist) {
           try {
-            yt.loadPlaylist({
-              list: youtubePlaylistId,
-              listType: 'playlist',
-              index: startIndex,
-            });
+            if (autoPlay) {
+              yt.loadPlaylist({
+                list: youtubePlaylistId,
+                listType: 'playlist',
+                index: startIndex,
+              });
+            } else {
+              if (yt.cuePlaylist) {
+                yt.cuePlaylist({
+                  list: youtubePlaylistId,
+                  listType: 'playlist',
+                  index: startIndex,
+                });
+              } else {
+                yt.loadPlaylist({
+                  list: youtubePlaylistId,
+                  listType: 'playlist',
+                  index: startIndex,
+                });
+                yt.pauseVideo?.();
+              }
+            }
             // Set volume to match our state
             setTimeout(() => {
               try { yt.setVolume(state.volume * 100); } catch { /* ignore */ }

@@ -13,12 +13,12 @@ export default function MusicPlayer() {
     setVolume, seekTo, togglePlay, playPlaylist
   } = usePlayer();
 
-  // Auto-play first YouTube playlist on mount
+  // Load first YouTube playlist on mount (paused by default so Play button ▶ shows)
   useEffect(() => {
     if (!currentSong) {
       const firstPlaylist = bhaktiPlaylists[0];
       if (firstPlaylist) {
-        playPlaylist(firstPlaylist.songs, 0, firstPlaylist.youtubePlaylistId);
+        playPlaylist(firstPlaylist.songs, 0, firstPlaylist.youtubePlaylistId, false);
       }
     }
   }, []);
